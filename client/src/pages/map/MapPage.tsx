@@ -3,9 +3,9 @@ import { Paper } from '@mui/material'
 import { MapApi } from '@/pages/map/services/MapApi'
 
 const MapPage = () => {
-    const { data: HTML } = MapApi.useGetCustomViewMutation("")
+    const { data: HTML } = MapApi.useGetCustomViewQuery("")
+    const [postData, { data }] = MapApi.usePostCustomViewMutation()
 
-    console.log(HTML)
     return (
         <main className='h-screen p-4 max-w-[1900px] mx-auto'>
             <div className='relative h-full'>
