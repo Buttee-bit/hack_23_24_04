@@ -2,7 +2,7 @@
 import { Button, Paper } from '@mui/material'
 import { MapApi } from '@/pages/map/services/MapApi'
 import { Toaster } from '@/components/ui/sonner'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import BuildingType from '@/components/map/BuildingType'
 import CategoryFilter from '@/components/map/CategoryFilter'
@@ -13,7 +13,8 @@ import PriceSlider from '@/components/map/PriceSlider'
 import SizeSlider from '@/components/map/SizeSlider'
 
 const MapPage = () => {
-	const { data: HTML } = MapApi.useGetCustomViewQuery('')
+	const { data: initialHTML } = MapApi.useGetCustomViewQuery('')
+	const [content, setContent] = useState('')
 	const [buildingCategory, setBuildingCategory] = useState<string[]>([])
 	const [entertainmentValue, setEntertainmentValue] = useState(100)
 	const [floorValue, setFloorValue] = useState([1, 50])
@@ -23,9 +24,36 @@ const MapPage = () => {
 	const [goodCategories, setGoodCategories] = useState([])
 	const [badCategories, setBadCategories] = useState([])
 
-	const handleClick = () => {}
+	const [postData, { data: postDataResponse }] = MapApi.usePostCustomViewMutation()
 
-	console.log(HTML)
+	useEffect(() => {
+		if (initialHTML) {
+			console.log("setContent(initialHTML)")
+			setContent(initialHTML);
+		}
+	}, [initialHTML]);
+
+	useEffect(() => {
+		if (postDataResponse) {
+			console.log("setContent(postDataResponse)")
+			setContent(postDataResponse);
+		}
+	}, [postDataResponse]);
+
+	const handleClick = async () => {
+		await postData({
+			price_min: priceValue[0],
+			price_max: priceValue[1],
+			square_min: sizeValue[0],
+			square_max: sizeValue[1],
+			floor_min: floorValue[0],
+			floor_max: floorValue[1],
+			segment_type_list: buildingCategory,
+			tourist_radius: 500,
+			metro_radius: 1000
+		})
+	}
+
 	return (
 		<main className='h-screen p-4 max-w-[1900px] mx-auto'>
 			<div className='relative h-full'>
@@ -83,7 +111,7 @@ const MapPage = () => {
 				</Paper>
 				<Paper
 					className='h-full w-full bg-red-300'
-					dangerouslySetInnerHTML={{ __html: HTML }}
+					dangerouslySetInnerHTML={{ __html: content  }}
 				>
 					{/* Контент будет вставлен сюда */}
 				</Paper>
