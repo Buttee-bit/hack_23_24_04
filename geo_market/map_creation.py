@@ -228,10 +228,10 @@ class MapCreation:
     
         return iframe
                 
-while True:
-    map = MapCreation()
-    map.build_map()
-    time.sleep(3000)
+# while True:
+#     map = MapCreation()
+#     map.build_map()
+#     time.sleep(3000)
 
 # print('start')
 # session = get_sync_session()
