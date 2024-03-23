@@ -28,12 +28,14 @@ const MapPage = () => {
 
 	useEffect(() => {
 		if (initialHTML) {
+			console.log("setContent(initialHTML)")
 			setContent(initialHTML);
 		}
 	}, [initialHTML]);
 
 	useEffect(() => {
 		if (postDataResponse) {
+			console.log("setContent(postDataResponse)")
 			setContent(postDataResponse);
 		}
 	}, [postDataResponse]);
