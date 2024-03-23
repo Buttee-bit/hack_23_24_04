@@ -247,6 +247,15 @@ class MapCreation:
         tourist_radius: int = 1000
         ):
         
+        print(price_min)
+        print(price_max)
+        print(square_min)
+        print(square_max)
+        print(floor_min)
+        print(floor_max)
+        print(segment_type_list)
+        print(metro_radius)
+        
         self.add_metro(metro_radius)
         self.add_tourist(tourist_radius)
         
