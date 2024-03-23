@@ -204,7 +204,6 @@ class MetroStation(Base):
     distance_metro: Mapped['Distance_metro'] = relationship('Distance_metro', back_populates='metro_station')
 
 class Tourist_attractions(Base):
-
     __tablename__ = 'tourist_attractions'
 
     id: Mapped[int] = mapped_column(
@@ -247,11 +246,9 @@ class Tourist_attractions(Base):
         nullable=True
     )
     
-    # Определите отношение к таблице Distance_attraction и явно укажите условие соединения
     distance_attraction: Mapped['Distance_attraction'] = relationship('Distance_attraction', primaryjoin='Tourist_attractions.id == Distance_attraction.id_attraction')
 
 class Distance_attraction(Base):
-
     __tablename__ = 'Distance_attraction'
 
     id: Mapped[int] = mapped_column(
@@ -278,7 +275,8 @@ class Distance_attraction(Base):
     )
 
     reality_atraction_data: Mapped['Reality'] = relationship('Reality')
-    attraction_name: Mapped['Tourist_attractions'] = relationship('Tourist_attractions')
+    attraction_name: Mapped['Tourist_attractions'] = relationship('Tourist_attractions', foreign_keys=[id_attraction])
+
 
 
 class Distance_metro(Base):
