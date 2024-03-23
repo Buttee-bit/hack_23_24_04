@@ -242,3 +242,40 @@ async def get_data(session: AsyncSession = Depends(get_async_session)):
         }
         data.append(obj_)
     return data
+
+
+@router.get('/get_distance_combined')
+async def get_combined_distance_data(session: AsyncSession = Depends(get_async_session)):
+    stmt_metro = select(Distance_metro).options(selectinload(Distance_metro.reality_data)).options(selectinload(Distance_metro.metro_station))
+    data_metro = await session.execute(stmt_metro)
+    data_metro = data_metro.scalars().all()
+    
+    stmt_attraction = select(Distance_attraction).options(selectinload(Distance_attraction.attraction_name)).options(selectinload(Distance_attraction.reality_atraction_data))
+    data_attraction = await session.execute(stmt_attraction)
+    data_attraction = data_attraction.scalars().all()
+
+    combined_data = []
+    for metro_data in data_metro[0:100]:
+        for attraction_data in data_attraction:
+            if metro_data.reality_data.id == attraction_data.reality_atraction_data.id:
+                obj_ = {
+                    'id': metro_data.id,
+                    'point_x': metro_data.reality_data.point_x,
+                    'point_y': metro_data.reality_data.point_y,
+                    'main_type': metro_data.reality_data.main_type,
+                    'segment_type': metro_data.reality_data.segment_type,
+                    'entity_type': metro_data.reality_data.entity_type,
+                    'total_arena': metro_data.reality_data.total_arena,
+                    'floor': metro_data.reality_data.floor,
+                    'lease_price': metro_data.reality_data.lease_price,
+                    'additional_info': metro_data.reality_data.additional_info,
+                    'source_info': metro_data.reality_data.source_info,
+                    'address': metro_data.reality_data.address,
+                    'update_date': metro_data.reality_data.update_date,
+                    'name_attract_metro': metro_data.metro_station.name_station,
+                    'distance_attract_metro': metro_data.distance,
+                    'name_attract_attraction': attraction_data.attraction_name.name,
+                    'distance_attract_attraction': attraction_data.distance,
+                }
+                combined_data.append(obj_)
+    return combined_data
