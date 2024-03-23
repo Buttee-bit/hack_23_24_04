@@ -71,3 +71,85 @@ class PoiData(Base):
         ARRAY(String),
         nullable=True
     )
+
+
+class Reality(Base):
+    __tablename__ = 'reality_data'
+
+    id: Mapped[int] = mapped_column(
+        'id',
+        Integer,
+        primary_key=True,
+        autoincrement=True
+    )
+
+    point_x: Mapped[float] = mapped_column(
+        'point_x',
+        Float,
+        nullable=True
+    )
+
+    point_y: Mapped[float] = mapped_column(
+        'point_y',
+        Float,
+        nullable=True
+    )
+
+    main_type: Mapped[str] = mapped_column(
+        'main_type',
+        String, 
+        nullable=True
+    )
+
+    segment_type: Mapped[str] = mapped_column(
+        'segment_type',
+        String, 
+        nullable=True
+    )
+
+    entity_type: Mapped[str] = mapped_column(
+        'entity_type',
+        String, 
+        nullable=True
+    )
+
+    total_arena: Mapped[int] = mapped_column(
+        'total_arena',
+        Integer,
+        nullable=True
+    )
+
+    floor: Mapped[int] = mapped_column(
+        'floor',
+        Integer,
+        nullable=True
+    )
+    lease_price: Mapped[int] = mapped_column(
+        'lease_price',
+        Integer,
+        nullable=True
+    )
+
+    additional_info: Mapped[str] = mapped_column(
+        'additional_info', 
+        String,
+        nullable=True
+    )
+
+    source_info: Mapped[str] = mapped_column(
+        'source_info', 
+        String,
+        nullable=True
+    )
+
+    address: Mapped[str] = mapped_column(
+        'address', 
+        String,
+        nullable=True
+    )
+
+    update_date: Mapped[datetime] = mapped_column(
+        'update_date',
+        DateTime, 
+        nullable=True
+    )
