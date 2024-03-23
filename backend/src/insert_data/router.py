@@ -1,3 +1,4 @@
+from asyncpg import ForeignKeyViolationError
 from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
 import pandas as pd
@@ -5,10 +6,11 @@ from sqlalchemy import and_,delete, desc, func, insert, select, update
 from sqlalchemy.orm import selectinload
 from ..datebase import get_async_session
 from sqlalchemy.ext.asyncio import AsyncSession
+from geopy.distance import geodesic
 
-
-from ..models import PoiData, Reality, MetroStation
+from ..models import PoiData, Reality, MetroStation, Distance_metro, Tourist_attractions,  Distance_attraction
 from .helper import load_data, load_data_reality, get_data_json, get_data_csv
+from sqlalchemy.exc import IntegrityError
 
 router = APIRouter (
     prefix='/insert_data',
@@ -98,7 +100,93 @@ async def data_metro(session: AsyncSession = Depends(get_async_session)):
             await session.commit()
     return 200
 
-@router.post('/data_tourist_attractions')
-async def data_metro():
-    get_data_csv()
+# @router.post('/data_tourist_attractions')
+# async def data_metro():
+#     get_data_csv()
+#     return 200
+
+@router.post('/distance_metro')
+async def distance_metro(session: AsyncSession = Depends(get_async_session)):
+    stmt_poi = select(Reality)
+    data_poi = await session.execute(stmt_poi)
+    data_poi = data_poi.scalars().all()
+    
+    stmt_metro = select(MetroStation)
+    data_metro = await session.execute(stmt_metro)
+    data_metro = data_metro.scalars().all()
+        
+    for poi in data_poi:
+        min_distance = float('inf')
+        id_metro = 0
+        point_poi = (poi.point_y, poi.point_x) 
+        for metro in data_metro:
+            point_metro = (metro.lat, metro.lon)
+            distance_poi_metro = geodesic(point_poi, point_metro).meters
+
+            if distance_poi_metro < min_distance:
+                id_metro = metro.id
+                min_distance = distance_poi_metro
+        
+        distance_instance = Distance_metro(
+            id_poe=poi.id,
+            id_metro=id_metro,
+            distance=round(min_distance, 2)
+        )
+        try:
+            session.add(distance_instance)
+            await session.commit()  # Асинхронный метод без await
+        except IntegrityError as e:
+            print(f"Ошибка IntegrityError: {e}")
+            await session.rollback()  # Асинхронный метод без await
+
+        
     return 200
+
+
+
+@router.post('/distance_attraction')
+async def distance_attraction(session: AsyncSession = Depends(get_async_session)):
+    stmt_poi = select(Reality)
+    data_poi = await session.execute(stmt_poi)
+    data_poi = data_poi.scalars().all()
+
+    
+    stmt_attractions = select(Tourist_attractions)
+    data_attractions = await session.execute(stmt_attractions)
+    data_attractions = data_attractions.scalars().all()
+
+    for poi in data_poi:
+        min_distance = float('inf')
+        id_attractions = 0
+        point_poi = (poi.point_y, poi.point_x) 
+        for metro in data_metro:
+            point_metro = (metro.lat, metro.lon)
+            distance_poi_metro = geodesic(point_poi, point_metro).meters
+
+            if distance_poi_metro < min_distance:
+                id_metro = metro.id
+                min_distance = distance_poi_metro
+        
+        distance_instance = Distance_attraction(
+            id_attraction=poi.id,
+            id_reality=id_metro,
+            distance=round(min_distance, 2)
+        )
+        try:
+            session.add(distance_instance)
+            await session.commit()  # Асинхронный метод без await
+        except IntegrityError as e:
+            print(f"Ошибка IntegrityError: {e}")
+            await session.rollback()  # Асинхронный метод без await
+
+        
+    return 200
+
+@router.get('/get_data')
+async def get_data(session: AsyncSession = Depends(get_async_session)):
+    stmt_real = select(Reality)
+    stmt_real = stmt_real.options(selectinload(Reality.distance_metro))
+    data_real = await session.execute(stmt_real)
+    data_real = data_real.scalars().all()
+    for i in data_real[0:10]:
+        print(i.distance_metro.distance)

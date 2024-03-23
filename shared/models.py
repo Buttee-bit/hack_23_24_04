@@ -69,6 +69,7 @@ class PoiData(Base):
         ARRAY(String),
         nullable=True
     )
+    
 
 
 class Reality(Base):
@@ -151,6 +152,8 @@ class Reality(Base):
         DateTime, 
         nullable=True
     )
+    distance_metro: Mapped['Distance_metro'] = relationship('Distance_metro', back_populates='reality_data')
+    distance_atraction: Mapped['Distance_attraction'] = relationship('Distance_attraction', back_populates='reality_atraction_data')
 
 
 class MetroStation(Base):
@@ -198,6 +201,7 @@ class MetroStation(Base):
         Integer,
         nullable=True
     )
+    distance_metro: Mapped['Distance_metro'] = relationship('Distance_metro', back_populates='metro_station')
 
 class Tourist_attractions(Base):
 
@@ -209,7 +213,7 @@ class Tourist_attractions(Base):
         primary_key=True,
         autoincrement=True
     )
-    
+
     name: Mapped[str] = mapped_column(
         'name',
         String,
@@ -224,12 +228,12 @@ class Tourist_attractions(Base):
         'region',
         String,
         nullable=True
-                )
+    )
     locality: Mapped[str] = mapped_column(
         'locality',
         String,
         nullable=True
-                )
+    )
 
     lat: Mapped[float] = mapped_column(
         'lat',
@@ -242,3 +246,67 @@ class Tourist_attractions(Base):
         Float,
         nullable=True
     )
+    
+    # Определите отношение к таблице Distance_attraction и явно укажите условие соединения
+    distance_attraction: Mapped['Distance_attraction'] = relationship('Distance_attraction', primaryjoin='Tourist_attractions.id == Distance_attraction.id_attraction')
+
+class Distance_attraction(Base):
+
+    __tablename__ = 'Distance_attraction'
+
+    id: Mapped[int] = mapped_column(
+        'id',
+        Integer,
+        primary_key=True,
+        autoincrement=True
+    )
+
+    id_attraction: Mapped[int] = mapped_column(
+        'id_attraction',
+        ForeignKey(Tourist_attractions.id)
+    )
+
+    id_reality: Mapped[int] = mapped_column(
+        'id_reality',
+        ForeignKey(Reality.id)
+    )
+
+    distance: Mapped[float] = mapped_column(
+        'distance',
+        Float,
+        nullable=True
+    )
+
+    reality_atraction_data: Mapped['Reality'] = relationship('Reality')
+    attraction_name: Mapped['Tourist_attractions'] = relationship('Tourist_attractions')
+
+
+class Distance_metro(Base):
+
+    __tablename__ = 'Distance_metro'
+
+    id: Mapped[int] = mapped_column(
+        'id',
+        Integer,
+        primary_key=True,
+        autoincrement=True
+    )
+
+    id_poe: Mapped[int] = mapped_column(
+        'id_poe',
+        ForeignKey(Reality.id)
+    )
+
+    id_metro: Mapped[int] = mapped_column(
+        'id_metro',
+        ForeignKey(MetroStation.id)
+    )
+
+    distance: Mapped[float] = mapped_column(
+        'distance',
+        Float,
+        nullable=True
+    )
+
+    reality_data: Mapped['Reality'] = relationship('Reality', back_populates='distance_metro')
+    metro_station: Mapped['MetroStation'] = relationship('MetroStation', back_populates='distance_metro')
