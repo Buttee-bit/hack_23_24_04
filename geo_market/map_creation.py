@@ -3,7 +3,9 @@ from folium.plugins import MarkerCluster
 from folium import FeatureGroup
 from folium import plugins
 from shared.models import Reality, PoiData, MetroStation
-from db import get_async_session
+from db import get_sync_session
+from sqlalchemy import and_,delete, desc, func, insert, select, update
+
 import geopandas as gpd
 
 import geopandas as gpd
@@ -24,6 +26,11 @@ class MapCreation:
         max_zoom: int = 20,
         cities: list[str] = ['Санкт-Петербург']
         ) -> None:
+        
+        self.width = width
+        self.height = height
+        
+        self.session = get_sync_session()
         
         self.map = folium.Map(
             width=width,
@@ -152,8 +159,13 @@ class MapCreation:
 
             if index == 100:
                 break
-        
-        self.map.save('total_map.html')
+            
+        self.map.get_root().width = f"{self.width}px"
+        self.map.get_root().height = f"{self.height}px"
+        iframe = self.map.get_root()._repr_html_()
+    
+        return iframe
+
         
     def search_by_params(
         self,
@@ -176,5 +188,13 @@ class MapCreation:
                 
         print(result)
     
-map = MapCreation()
-map.search_by_params()
+# map = MapCreation()
+# map.search_by_params()
+
+print('start')
+session = get_sync_session()
+stmt = select(PoiData)
+data = session.execute(stmt)
+DATA = data.scalars().all()
+print(DATA)
+session.close() # Не забудьт
