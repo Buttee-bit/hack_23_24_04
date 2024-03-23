@@ -1,8 +1,6 @@
 from __future__ import annotations
 
 from datetime import datetime
-from fastapi_users_db_sqlalchemy import SQLAlchemyBaseUserTable
-
 from sqlalchemy import (JSON, TIMESTAMP, BigInteger, Boolean, Column, DateTime, Float, ForeignKey, Integer, MetaData, SmallInteger, String,
                         Table, UniqueConstraint,FLOAT )
 from sqlalchemy.dialects.postgresql import ARRAY

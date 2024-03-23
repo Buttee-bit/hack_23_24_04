@@ -1,0 +1,7 @@
+SQLAlchemy==2.0.20
+psycopg2-binary==2.9.7
+asyncpg==0.28.0
+envparse>=0.2.0
+python-dotenv>=1.0.0
+structlog==23.1.0
+fastapi-users-db-sqlalchemy==4.0.4
