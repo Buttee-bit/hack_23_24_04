@@ -2,8 +2,7 @@ import { sizeBigMarks, sizeSmallMarks } from '@/consts/rangeValues'
 import { Slider, Switch } from '@mui/material'
 import React from 'react'
 
-export default function NonLinearSlider() {
-	const [value, setValue] = React.useState([1, 25])
+export default function SizeSlider({value,setValue}) {
 	const [switchSmallSize, setSwitchSmallSize] = React.useState(true)
 
 	const handleChange = (event, newValue) => {

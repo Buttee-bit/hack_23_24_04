@@ -33,8 +33,7 @@ function valuetext(value: number) {
 	return `${value}км`
 }
 
-export default function EntertainmentSlider() {
-	const [value, setValue] = React.useState(100)
+export default function EntertainmentSlider({value, setValue}) {
 
 	const handleChange = (event, newValue) => {
 		setValue(newValue)

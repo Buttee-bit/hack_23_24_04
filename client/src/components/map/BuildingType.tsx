@@ -30,9 +30,8 @@ function getStyles(name: string, category: readonly string[], theme: Theme) {
 	}
 }
 
-export default function BuildingType() {
+export default function BuildingType({ category, setCategory }) {
 	const theme = useTheme()
-	const [category, setCategory] = React.useState<string[]>([])
 
 	const handleChange = (event: SelectChangeEvent<typeof category>) => {
 		const {
@@ -44,7 +43,7 @@ export default function BuildingType() {
 		)
 	}
 
-    console.log(category)
+	console.log(category)
 
 	return (
 		<div>
