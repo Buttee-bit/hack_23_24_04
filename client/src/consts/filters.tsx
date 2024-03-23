@@ -1,6 +1,9 @@
+import BuildingType from '@/components/map/BuildingType'
+import EntertainmentSlider from '@/components/map/EntertainmentSlider'
+import FloorSlider from '@/components/map/FloorSlider'
+import MetroSlider from '@/components/map/MetroSlider'
 import PriceSlider from '@/components/map/PriceSlider'
 import SizeSlider from '@/components/map/SizeSlider'
-import NonLinearSlider from '@/components/map/test'
 
 export const filters = [
 	{
@@ -8,6 +11,11 @@ export const filters = [
 	},
 	{
 		component: <SizeSlider />
-		// component: <NonLinearSlider />
-	}
+	},
+	{
+		component: <FloorSlider />
+	},
+	{ component: <BuildingType /> },
+	{ component: <MetroSlider /> },
+	{ component: <EntertainmentSlider /> }
 ]
