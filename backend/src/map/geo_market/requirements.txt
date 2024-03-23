@@ -3,3 +3,4 @@ folium==0.16.0
 pandas==2.2.0
 numpy==1.26.2
 osmnx==1.9.1
+geopy==2.4.1
