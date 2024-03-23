@@ -63,6 +63,7 @@ class MapCreation:
         folium.GeoJson(overlay, name = 'Граница').add_to(self.map)
 
         self.marker_cluster = MarkerCluster(name='Конкуренты').add_to(self.map)
+        self.metro_points = FeatureGroup(name='Метро').add_to(self.map)
         self.marker_points = FeatureGroup(name='Точки интереса', show=False).add_to(self.map)
 
         plugins.Fullscreen().add_to(self.map)
@@ -97,6 +98,19 @@ class MapCreation:
         folium.TileLayer('openstreetmap').add_to(self.map)
 
         folium.LayerControl().add_to(self.map)
+        
+    def add_metro(self):
+        stmt = select(MetroStation)
+        data = self.session.execute(stmt)
+        data = data.scalars().all()
+        
+        for station in data:
+            folium.Marker(
+            location=[station.lat, station.lon],
+            popup=station.name_station,
+            tooltip=station.name_station,
+            icon=folium.Icon(color="blue", icon="globe"),
+            ).add_to(self.metro_points)
         
     @staticmethod
     def read_data(
@@ -193,6 +207,8 @@ class MapCreation:
         
     def build_map(self):
         
+        self.add_metro()
+        
         data: list[Reality] = self.search_by_params()
         
         for el in data:
@@ -212,10 +228,10 @@ class MapCreation:
     
         return iframe
                 
-while True:
-    map = MapCreation()
-    map.build_map()
-    time.sleep(3000)
+# while True:
+#     map = MapCreation()
+#     map.build_map()
+#     time.sleep(3000)
 
 # print('start')
 # session = get_sync_session()

@@ -11,14 +11,18 @@ export const MapApi = createApi({
                 url: `/custom_view/custom_map`,
             })
         }),
-        postSpecialOffer: builder.mutation<any, { date_advertisement: string, old_coast: number, new_coast: number }>({
-            query: ({ date_advertisement, old_coast, new_coast }) => ({
-                url: `/special_adv/admin_create`,
+        postCustomView: builder.mutation<any, { price_min: number, price_max: number, square_min: number, square_max: number, floor_min: number, floor_max: number, segment_type_list: string[]}>({
+            query: ({ price_min, price_max, square_min, square_max, floor_min, floor_max, segment_type_list }) => ({
+                url: `/custom_view/custom_map`,
                 method: "post",
                 body: {
-                    date_advertisement,
-                    old_coast,
-                    new_coast
+                    price_min,
+                    price_max,
+                    square_min,
+                    square_max, 
+                    floor_min, 
+                    floor_max, 
+                    segment_type_list
                 },
                 headers: {
                     "Content-Type": "application/json",
@@ -29,5 +33,5 @@ export const MapApi = createApi({
 });
 
 export const {
-    useGetCustomViewQuery, usePostSpecialOfferMutation
+    useGetCustomViewQuery, usePostCustomViewMutation,
 } = MapApi;

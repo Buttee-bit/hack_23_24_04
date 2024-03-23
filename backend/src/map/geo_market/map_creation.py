@@ -63,6 +63,7 @@ class MapCreation:
         folium.GeoJson(overlay, name = 'Граница').add_to(self.map)
 
         self.marker_cluster = MarkerCluster(name='Конкуренты').add_to(self.map)
+        self.metro_points = FeatureGroup(name='Метро').add_to(self.map)
         self.marker_points = FeatureGroup(name='Точки интереса', show=False).add_to(self.map)
 
         plugins.Fullscreen().add_to(self.map)
@@ -97,6 +98,19 @@ class MapCreation:
         folium.TileLayer('openstreetmap').add_to(self.map)
 
         folium.LayerControl().add_to(self.map)
+        
+    def add_metro(self):
+        stmt = select(MetroStation)
+        data = self.session.execute(stmt)
+        data = data.scalars().all()
+        
+        for station in data:
+            folium.Marker(
+            location=[station.lat, station.lon],
+            popup=station.name_station,
+            tooltip=station.name_station,
+            icon=folium.Icon(color="blue", icon="globe"),
+            ).add_to(self.metro_points)
         
     @staticmethod
     def read_data(
@@ -167,7 +181,6 @@ class MapCreation:
     
         return iframe
 
-        
     def search_by_params(
         self,
         price_min: int = 100,
@@ -175,7 +188,8 @@ class MapCreation:
         square_min: int = 10,
         square_max: int = 100,
         floor_min: float = 1.0,
-        floor_max: float = 3.0
+        floor_max: float = 3.0,
+        segment_type_list: list[str] = ['Офисные', 'Производственные', 'Торговые', 'Иные']
         ):
         
         stmt = select(Reality).where(
@@ -183,6 +197,7 @@ class MapCreation:
                 Reality.lease_price.between(price_min, price_max),
                 Reality.total_arena.between(square_min, square_max),
                 Reality.floor.between(floor_min, floor_max),
+                Reality.segment_type.in_(segment_type_list)
             )
         )
         data = self.session.execute(stmt)
@@ -190,9 +205,28 @@ class MapCreation:
         print(len(data))
         return data
         
-    def build_map(self):
+    def build_map(
+        self,
+        price_min: int = 100,
+        price_max: int = 1000,
+        square_min: int = 10,
+        square_max: int = 1000,
+        floor_min: float = 1.0,
+        floor_max: float = 5.0,
+        segment_type_list: list[str] = ['Офисные', 'Производственные', 'Торговые', 'Иные']
+        ):
         
-        data: list[Reality] = self.search_by_params()
+        self.add_metro()
+        
+        data: list[Reality] = self.search_by_params(
+            price_min=price_min,
+            price_max=price_max,
+            square_min=square_min,
+            square_max=square_max,
+            floor_min=floor_min,
+            floor_max=floor_max,
+            segment_type_list=segment_type_list
+        )
         
         for el in data:
         
