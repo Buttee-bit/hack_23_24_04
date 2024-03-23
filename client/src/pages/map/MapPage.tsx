@@ -3,7 +3,7 @@ import { Paper } from '@mui/material'
 import { MapApi } from '@/pages/map/services/MapApi'
 
 const MapPage = () => {
-    const { data: HTML } = MapApi.useGetCustomViewQuery("")
+    const { data: HTML } = MapApi.useGetCustomViewMutation("")
 
     console.log(HTML)
     return (
