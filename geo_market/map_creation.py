@@ -167,7 +167,6 @@ class MapCreation:
     
         return iframe
 
-        
     def search_by_params(
         self,
         price_min: int = 100,
@@ -175,7 +174,8 @@ class MapCreation:
         square_min: int = 10,
         square_max: int = 100,
         floor_min: float = 1.0,
-        floor_max: float = 3.0
+        floor_max: float = 3.0,
+        segment_type: str = 'Офисные'
         ):
         
         stmt = select(Reality).where(
@@ -183,6 +183,7 @@ class MapCreation:
                 Reality.lease_price.between(price_min, price_max),
                 Reality.total_arena.between(square_min, square_max),
                 Reality.floor.between(floor_min, floor_max),
+                Reality.segment_type == segment_type
             )
         )
         data = self.session.execute(stmt)
