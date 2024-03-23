@@ -12,6 +12,7 @@ import geopandas as gpd
 import pandas as pd
 import numpy as np
 import osmnx as ox
+import time
 
 
 class MapCreation:
@@ -99,8 +100,8 @@ class MapCreation:
         
     @staticmethod
     def read_data(
-        poi_path: str = r'src/map/geo_market/realty.csv',
-        realty_path: str = r'src/map/geo_market/realty.csv'
+        poi_path: str = "poi.csv",
+        realty_path: str = "realty.csv"
         ):
         
         poi = pd.read_csv(poi_path, sep = '|')
@@ -119,17 +120,17 @@ class MapCreation:
         return popup
     
     @staticmethod
-    def get_realty_popup(row):
+    def get_realty_popup(row: Reality):
         popup = ''
-        popup += f"Адрес: {row['address']}\n"
-        popup += f"Тип объявления: {row['main_type']}\n"
-        popup += f"Тип помещения: {row['segment_type']}\n"
-        popup += f"Площадь: {row['total_area']}\n"
-        popup += f"Этаж: {row['floor']}\n"
-        popup += f"Стоимость: {row['lease_price']}\n"
-        popup += f"Источник: {row['source_info']}\n"
-        popup += f"Ссылка: <a href={row['additional_info']}target='_blank'>Ссылка</a>"
-        popup += f"Дата публикации: {row['update_date']}\n"
+        popup += f"Адрес: {row.address}\n"
+        popup += f"Тип объявления: {row.main_type}\n"
+        popup += f"Тип помещения: {row.segment_type}\n"
+        popup += f"Площадь: {row.total_arena}\n"
+        popup += f"Этаж: {row.floor}\n"
+        popup += f"Стоимость: {row.lease_price}\n"
+        popup += f"Источник: {row.source_info}\n"
+        popup += f"Ссылка: <a href={row.additional_info}target='_blank'>Ссылка</a>"
+        popup += f"Дата публикации: {row.update_date}\n"
 
         return popup
 
@@ -170,31 +171,55 @@ class MapCreation:
     def search_by_params(
         self,
         price_min: int = 100,
-        price_max: int = 10000,
+        price_max: int = 1000,
         square_min: int = 10,
-        square_max: int = 1000,
+        square_max: int = 100,
         floor_min: float = 1.0,
-        floor_max: float = 5.0
+        floor_max: float = 3.0
         ):
         
-        poi, realty = self.read_data()
+        stmt = select(Reality).where(
+            and_(
+                Reality.lease_price.between(price_min, price_max),
+                Reality.total_arena.between(square_min, square_max),
+                Reality.floor.between(floor_min, floor_max),
+            )
+        )
+        data = self.session.execute(stmt)
+        data = data.scalars().all()
+        print(len(data))
+        return data
         
-        result = list()
+    def build_map(self):
         
-        for index, row in realty.iterrows():
-            # print(row)
-            if int(row['lease_price']) in [range(price_min, price_max)] and int(row['total_area']) in [range(square_min, square_max)] and floor_min <= float(row['floor']) <= floor_max:
-                result.append(row)
-                
-        print(result)
+        data: list[Reality] = self.search_by_params()
+        
+        for el in data:
+        
+            folium.Marker(
+                location=[el.point_y, el.point_x],
+                popup=self.get_realty_popup(el),
+                tooltip=str(el.address),
+                icon=folium.Icon(color="red", icon="flash"),
+                ).add_to(self.marker_cluster)
+            
+        self.map.save('new_map.html')
+        
+        self.map.get_root().width = f"{self.width}px"
+        self.map.get_root().height = f"{self.height}px"
+        iframe = self.map.get_root()._repr_html_()
     
-# map = MapCreation()
-# map.search_by_params()
+        return iframe
+                
+while True:
+    map = MapCreation()
+    map.build_map()
+    time.sleep(3000)
 
-print('start')
-session = get_sync_session()
-stmt = select(PoiData)
-data = session.execute(stmt)
-DATA = data.scalars().all()
-print(DATA)
-session.close() # Не забудьт
+# print('start')
+# session = get_sync_session()
+# stmt = select(PoiData)
+# data = session.execute(stmt)
+# DATA = data.scalars().all()
+# print(DATA)
+# session.close() # Не забудьт

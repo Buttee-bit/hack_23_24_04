@@ -22,7 +22,7 @@ router = APIRouter (
 
 @router.get('/custom_map')
 async def custom_map():
-    iframe = map.visualize_polygons_all_data()
+    iframe = map.build_map()
     return iframe
 
 # def visualize_polygons(geometry):
