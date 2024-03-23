@@ -1,4 +1,5 @@
 import BuildingType from '@/components/map/BuildingType'
+import CategoryFilter from '@/components/map/CategoryFilter'
 import EntertainmentSlider from '@/components/map/EntertainmentSlider'
 import FloorSlider from '@/components/map/FloorSlider'
 import MetroSlider from '@/components/map/MetroSlider'
@@ -17,5 +18,6 @@ export const filters = [
 	},
 	{ component: <BuildingType /> },
 	{ component: <MetroSlider /> },
-	{ component: <EntertainmentSlider /> }
+	{ component: <EntertainmentSlider /> },
+	{ component: <CategoryFilter /> }
 ]

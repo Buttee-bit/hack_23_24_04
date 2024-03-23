@@ -9,7 +9,7 @@ const Filter = () => {
 
 	return (
 		<>
-			<Paper className='absolute z-10 top-5 left-5 w-1/5 h-[calc(100%-2.5rem)] py-4'>
+			<Paper className='absolute z-10 top-5 left-20 w-1/5 h-[calc(100%-2.5rem)] py-4'>
 				<ScrollArea className='h-full'>
 					<h2 className='text-center text-lg font-semibold'>
 						Фильтры
