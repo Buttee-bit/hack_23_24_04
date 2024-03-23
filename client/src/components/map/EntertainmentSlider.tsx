@@ -1,6 +1,5 @@
-import * as React from 'react'
-import Box from '@mui/material/Box'
 import Slider from '@mui/material/Slider'
+import { FC } from 'react'
 
 const marks = [
 	{
@@ -33,9 +32,13 @@ function valuetext(value: number) {
 	return `${value}км`
 }
 
-export default function EntertainmentSlider({value, setValue}) {
+interface Props {
+	value: number
+	setValue: any
+}
 
-	const handleChange = (event, newValue) => {
+const EntertainmentSlider: FC<Props> = ({ value, setValue }) => {
+	const handleChange = (event: any, newValue: any) => {
 		setValue(newValue)
 	}
 
@@ -63,3 +66,5 @@ export default function EntertainmentSlider({value, setValue}) {
 		</div>
 	)
 }
+
+export default EntertainmentSlider

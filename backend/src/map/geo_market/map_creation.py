@@ -12,7 +12,7 @@ import geopandas as gpd
 import pandas as pd
 import numpy as np
 import osmnx as ox
-import time
+from geopy.distance import geodesic
 
 
 class MapCreation:
@@ -62,8 +62,8 @@ class MapCreation:
         overlay = gpd.GeoSeries(geometry).to_json()
         folium.GeoJson(overlay, name = 'Граница').add_to(self.map)
 
-        self.marker_cluster = MarkerCluster(name='Конкуренты').add_to(self.map)
-        self.metro_points = FeatureGroup(name='Метро').add_to(self.map)
+        self.marker_cluster = MarkerCluster(name='Конкуренты', show=False).add_to(self.map)
+        self.metro_points = FeatureGroup(name='Метро', show=False).add_to(self.map)
         self.marker_points = FeatureGroup(name='Точки интереса', show=False).add_to(self.map)
 
         plugins.Fullscreen().add_to(self.map)
@@ -111,6 +111,19 @@ class MapCreation:
             tooltip=station.name_station,
             icon=folium.Icon(color="blue", icon="globe"),
             ).add_to(self.metro_points)
+            
+            folium.Circle(
+                location=[station.lat, station.lon],
+                radius=1000,
+                color="blue",
+                weight=1,
+                fill_opacity=0.2,
+                opacity=1,
+                fill_color="blue",
+                fill=False,  # gets overridden by fill_color
+                popup=f"Метро: {station.name_station}",
+                tooltip=f"Близкая к метро {station.name_station} область",
+            ).add_to(self.metro_points)
         
     @staticmethod
     def read_data(
@@ -147,39 +160,6 @@ class MapCreation:
         popup += f"Дата публикации: {row.update_date}\n"
 
         return popup
-
-    def visualize_polygons_all_data(self):
-        
-        poi, realty = self.read_data()
-
-        for index, row in poi.iterrows():
-
-            folium.Marker(
-            location=[row['lat'], row['lon']],
-            popup=self.get_poi_popup(row),
-            # tooltip=str(row['name']),
-            icon=folium.Icon(color="red", icon="flash"),
-            ).add_to(self.marker_cluster)
-            
-            if index == 100:
-                break
-
-        for index, row in realty.iterrows():
-            folium.Marker(
-            location=[row['point_y'], row['point_x']],
-            popup=self.get_realty_popup(row),
-            tooltip=row['address'],
-            icon=folium.Icon(color="green", icon="star"),
-            ).add_to(self.marker_points)
-
-            if index == 100:
-                break
-            
-        self.map.get_root().width = f"{self.width}px"
-        self.map.get_root().height = f"{self.height}px"
-        iframe = self.map.get_root()._repr_html_()
-    
-        return iframe
 
     def search_by_params(
         self,
@@ -235,14 +215,19 @@ class MapCreation:
                 popup=self.get_realty_popup(el),
                 tooltip=str(el.address),
                 icon=folium.Icon(color="red", icon="flash"),
-                ).add_to(self.marker_cluster)
-            
-        self.map.save('new_map.html')
+                ).add_to(self.marker_points)
         
         self.map.get_root().width = f"{self.width}px"
         self.map.get_root().height = f"{self.height}px"
         iframe = self.map.get_root()._repr_html_()
-    
+
+        point1 = (59.94, 30.22) # Пример координат первой точки
+        point2 = (59.95, 30.23) # Пример координат второй точки
+
+        # Расчет расстояния между двумя точками в метрах
+        distance = geodesic(point1, point2).meters
+
+        print(f"Расстояние между точками: {distance} метров")
         return iframe
                 
 # while True:
