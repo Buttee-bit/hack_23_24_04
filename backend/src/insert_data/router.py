@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 
 from ..models import PoiData, Reality, MetroStation
-from .helper import load_data, load_data_reality, get_data_json
+from .helper import load_data, load_data_reality, get_data_json, get_data_csv
 
 router = APIRouter (
     prefix='/insert_data',
@@ -96,4 +96,9 @@ async def data_metro(session: AsyncSession = Depends(get_async_session)):
             )
             await session.execute(stmt)
             await session.commit()
+    return 200
+
+@router.post('/data_tourist_attractions')
+async def data_metro():
+    get_data_csv()
     return 200

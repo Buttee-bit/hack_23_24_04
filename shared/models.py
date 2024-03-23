@@ -154,7 +154,9 @@ class Reality(Base):
 
 
 class MetroStation(Base):
+
     __tablename__ = 'metroStation'
+
     id: Mapped[int] = mapped_column(
         'id',
         Integer,
@@ -194,5 +196,49 @@ class MetroStation(Base):
     order: Mapped[int] = mapped_column(
         'order', 
         Integer,
+        nullable=True
+    )
+
+class Tourist_attractions(Base):
+
+    __tablename__ = 'tourist_attractions'
+
+    id: Mapped[int] = mapped_column(
+        'id',
+        Integer,
+        primary_key=True,
+        autoincrement=True
+    )
+    
+    name: Mapped[str] = mapped_column(
+        'name',
+        String,
+        nullable=True
+    )
+    type: Mapped[str] = mapped_column(
+        'type',
+        String,
+        nullable=True
+    )
+    region: Mapped[str] = mapped_column(
+        'region',
+        String,
+        nullable=True
+                )
+    locality: Mapped[str] = mapped_column(
+        'locality',
+        String,
+        nullable=True
+                )
+
+    lat: Mapped[float] = mapped_column(
+        'lat',
+        Float,
+        nullable=True
+    )
+
+    lon: Mapped[float] = mapped_column(
+        'lon',
+        Float,
         nullable=True
     )
