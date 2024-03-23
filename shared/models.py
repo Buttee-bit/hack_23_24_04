@@ -153,3 +153,48 @@ class Reality(Base):
         DateTime, 
         nullable=True
     )
+
+
+class MetroStation(Base):
+    __tablename__ = 'metroStation'
+    id: Mapped[int] = mapped_column(
+        'id',
+        Integer,
+        primary_key=True,
+        autoincrement=True
+    )
+
+    hex_color: Mapped[str] = mapped_column(
+        'hex_color',
+        String, 
+        nullable=True
+    )
+
+    name_line: Mapped[str] = mapped_column(
+        'name_line',
+        String,
+        nullable=True
+    )
+    name_station: Mapped[str] = mapped_column(
+        'name_station',
+        String,
+        nullable=True
+    )
+
+    lat: Mapped[float] = mapped_column(
+        'lat',
+        Float,
+        nullable=True
+    )
+
+    lon: Mapped[float] = mapped_column(
+        'lon',
+        Float,
+        nullable=True
+    )
+    
+    order: Mapped[int] = mapped_column(
+        'order', 
+        Integer,
+        nullable=True
+    )

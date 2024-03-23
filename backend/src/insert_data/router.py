@@ -7,8 +7,8 @@ from ..datebase import get_async_session
 from sqlalchemy.ext.asyncio import AsyncSession
 
 
-from ..models import PoiData, Reality
-from .helper import load_data, load_data_reality
+from ..models import PoiData, Reality, MetroStation
+from .helper import load_data, load_data_reality, get_data_json
 
 router = APIRouter (
     prefix='/insert_data',
@@ -75,4 +75,25 @@ async def data_reality(session: AsyncSession = Depends(get_async_session)):
         await session.execute(stmt)
         await session.commit()
 
+    return 200
+
+
+
+@router.post('/data_metro')
+async def data_metro(session: AsyncSession = Depends(get_async_session)):
+    data = get_data_json()
+    for line in data['lines']:
+        line_id = int(line['id'])
+        for station in line['stations']:
+            stmt = insert(MetroStation)
+            stmt = stmt.values(
+                hex_color=line['hex_color'],
+                name_line=line['name'],
+                name_station=station['name'],
+                lat=station['lat'],
+                lon=station['lng'],
+                order=station['order']
+            )
+            await session.execute(stmt)
+            await session.commit()
     return 200
