@@ -1,5 +1,5 @@
 import Filter from '@/components/map/Filter'
-import { Paper } from '@mui/material'
+import { Button, Paper } from '@mui/material'
 import { MapApi } from '@/pages/map/services/MapApi'
 import { Toaster } from '@/components/ui/sonner'
 import { useState } from 'react'
@@ -36,12 +36,30 @@ const MapPage = () => {
 								value={priceValue}
 								setValue={setPriceValue}
 							/>
-							<SizeSlider value={sizeValue} setValue={setSizeValue}/>
-							<FloorSlider value={floorValue} setValue={setFloorValue} />
-							<BuildingType category={buildingCategory} setCategory={setBuildingCategory} />
-							<MetroSlider value={metroValue} setValue={setMetroValue} />
-							<EntertainmentSlider value={entertainmentValue} setValue={setEntertainmentValue} />
+							<SizeSlider
+								value={sizeValue}
+								setValue={setSizeValue}
+							/>
+							<FloorSlider
+								value={floorValue}
+								setValue={setFloorValue}
+							/>
+							<BuildingType
+								category={buildingCategory}
+								setCategory={setBuildingCategory}
+							/>
+							<MetroSlider
+								value={metroValue}
+								setValue={setMetroValue}
+							/>
+							<EntertainmentSlider
+								value={entertainmentValue}
+								setValue={setEntertainmentValue}
+							/>
 							<CategoryFilter />
+							<Button>
+								<span>Сохранить</span>
+							</Button>
 						</div>
 					</ScrollArea>
 				</Paper>

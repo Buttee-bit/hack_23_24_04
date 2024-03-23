@@ -1,17 +1,21 @@
 import { floorMarks } from '@/consts/rangeValues'
 import { Slider } from '@mui/material'
-import React from 'react'
+import { FC } from 'react'
 
-export default function FloorSlider({value, setValue}) {
+interface Props {
+	value: number
+	setValue: any
+}
 
-	const handleChange = (event, newValue) => {
+const FloorSlider: FC<Props> = ({ value, setValue }) => {
+	const handleChange = (event: any, newValue: any) => {
 		setValue(newValue)
 	}
 
-	const scaleValues = valueArray => {
+	const scaleValues = (valueArray: any) => {
 		return [scale(valueArray[0]), scale(valueArray[1])]
 	}
-	const scale = value => {
+	const scale = (value: any) => {
 		if (value === undefined) {
 			return undefined
 		}
@@ -54,3 +58,5 @@ export default function FloorSlider({value, setValue}) {
 		</div>
 	)
 }
+
+export default FloorSlider

@@ -24,12 +24,8 @@ export default function CategoryFilter() {
 				categories={badCategories}
 				setCategories={setBadCategories}
 				altCategories={goodCategories}
-				setAltCategories={setGoodCategories}
 				data={data}
 			/>
-			<Button>
-				<span>Сохранить</span>
-			</Button>
 		</>
 	)
 }

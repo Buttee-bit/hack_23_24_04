@@ -2,10 +2,10 @@ import { sizeBigMarks, sizeSmallMarks } from '@/consts/rangeValues'
 import { Slider, Switch } from '@mui/material'
 import React from 'react'
 
-export default function SizeSlider({value,setValue}) {
+export default function SizeSlider({ value, setValue }) {
 	const [switchSmallSize, setSwitchSmallSize] = React.useState(true)
 
-	const handleChange = (event, newValue) => {
+	const handleChange = (event: any, newValue: any) => {
 		setValue(newValue)
 	}
 
@@ -13,10 +13,10 @@ export default function SizeSlider({value,setValue}) {
 		setSwitchSmallSize(prev => !prev)
 	}
 
-	const scaleValues = valueArray => {
+	const scaleValues = (valueArray: any) => {
 		return [scale(valueArray[0]), scale(valueArray[1])]
 	}
-	const scale = value => {
+	const scale = (value: any) => {
 		if (value === undefined) {
 			return undefined
 		}
