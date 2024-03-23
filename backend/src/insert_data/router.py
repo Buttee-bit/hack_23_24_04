@@ -184,11 +184,98 @@ async def distance_attraction(session: AsyncSession = Depends(get_async_session)
         
     return 200
 
-@router.get('/get_data')
+@router.get('/get_distance_attraction')
 async def get_data(session: AsyncSession = Depends(get_async_session)):
-    stmt_real = select(Reality)
-    stmt_real = stmt_real.options(selectinload(Reality.distance_metro))
+    stmt_real = select(Distance_attraction)
+    stmt_real = stmt_real.options(selectinload(Distance_attraction.attraction_name))
+    stmt_real = stmt_real.options(selectinload(Distance_attraction.reality_atraction_data))
     data_real = await session.execute(stmt_real)
     data_real = data_real.scalars().all()
+    data = []
     for i in data_real[0:10]:
-        print(i.distance_metro.distance)
+        obj_ = {
+            'id':i.id,
+            'point_x':i.reality_atraction_data.point_x,
+            'point_y':i.reality_atraction_data.point_y,
+            'main_type':i.reality_atraction_data.main_type,
+            'segment_type':i.reality_atraction_data.segment_type,
+            'entity_type':i.reality_atraction_data.entity_type,
+            'total_arena':i.reality_atraction_data.total_arena,
+            'floor':i.reality_atraction_data.floor,
+            'lease_price':i.reality_atraction_data.lease_price,
+            'additional_info':i.reality_atraction_data.additional_info,
+            'source_info':i.reality_atraction_data.source_info,
+            'address':i.reality_atraction_data.address,
+            'update_date':i.reality_atraction_data.update_date,
+            'name_attract':i.attraction_name.name,
+            'distance_attract':i.distance,
+        }
+        data.append(obj_)
+    return data
+
+@router.get('/get_distance_metro')
+async def get_data(session: AsyncSession = Depends(get_async_session)):
+    stmt_real = select(Distance_metro)
+    stmt_real = stmt_real.options(selectinload(Distance_metro.reality_data))
+    stmt_real = stmt_real.options(selectinload(Distance_metro.metro_station))
+    data_real = await session.execute(stmt_real)
+    data_real = data_real.scalars().all()
+    print(data_real)
+    data = []
+    for i in data_real[0:10]:
+        obj_ = {
+            'id':i.id,
+            'point_x':i.reality_data.point_x,
+            'point_y':i.reality_data.point_y,
+            'main_type':i.reality_data.main_type,
+            'segment_type':i.reality_data.segment_type,
+            'entity_type':i.reality_data.entity_type,
+            'total_arena':i.reality_data.total_arena,
+            'floor':i.reality_data.floor,
+            'lease_price':i.reality_data.lease_price,
+            'additional_info':i.reality_data.additional_info,
+            'source_info':i.reality_data.source_info,
+            'address':i.reality_data.address,
+            'update_date':i.reality_data.update_date,
+            'name_attract':i.metro_station.name_station,
+            'distance_attract':i.distance,
+        }
+        data.append(obj_)
+    return data
+
+
+@router.get('/get_distance_combined')
+async def get_combined_distance_data(session: AsyncSession = Depends(get_async_session)):
+    stmt_metro = select(Distance_metro).options(selectinload(Distance_metro.reality_data)).options(selectinload(Distance_metro.metro_station))
+    data_metro = await session.execute(stmt_metro)
+    data_metro = data_metro.scalars().all()
+    
+    stmt_attraction = select(Distance_attraction).options(selectinload(Distance_attraction.attraction_name)).options(selectinload(Distance_attraction.reality_atraction_data))
+    data_attraction = await session.execute(stmt_attraction)
+    data_attraction = data_attraction.scalars().all()
+
+    combined_data = []
+    for metro_data in data_metro[0:100]:
+        for attraction_data in data_attraction:
+            if metro_data.reality_data.id == attraction_data.reality_atraction_data.id:
+                obj_ = {
+                    'id': metro_data.id,
+                    'point_x': metro_data.reality_data.point_x,
+                    'point_y': metro_data.reality_data.point_y,
+                    'main_type': metro_data.reality_data.main_type,
+                    'segment_type': metro_data.reality_data.segment_type,
+                    'entity_type': metro_data.reality_data.entity_type,
+                    'total_arena': metro_data.reality_data.total_arena,
+                    'floor': metro_data.reality_data.floor,
+                    'lease_price': metro_data.reality_data.lease_price,
+                    'additional_info': metro_data.reality_data.additional_info,
+                    'source_info': metro_data.reality_data.source_info,
+                    'address': metro_data.reality_data.address,
+                    'update_date': metro_data.reality_data.update_date,
+                    'name_attract_metro': metro_data.metro_station.name_station,
+                    'distance_attract_metro': metro_data.distance,
+                    'name_attract_attraction': attraction_data.attraction_name.name,
+                    'distance_attract_attraction': attraction_data.distance,
+                }
+                combined_data.append(obj_)
+    return combined_data
