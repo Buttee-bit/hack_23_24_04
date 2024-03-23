@@ -46,7 +46,9 @@ const MapPage = () => {
 			square_max: sizeValue[1],
 			floor_min: floorValue[0],
 			floor_max: floorValue[1],
-			segment_type_list: buildingCategory
+			segment_type_list: buildingCategory,
+			tourist_radius: 500,
+			metro_radius: 1000
 		})
 	}
 

@@ -9,3 +9,5 @@ class CustomMapView(BaseModel):
     floor_min: float
     floor_max: float
     segment_type_list: List[str]
+    metro_radius: int
+    tourist_radius: int

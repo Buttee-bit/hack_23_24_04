@@ -40,7 +40,9 @@ async def custom_map_params(custom_map_view: CustomMapView) -> Any:
         custom_map_view.square_max, 
         custom_map_view.floor_min, 
         custom_map_view.floor_max, 
-        custom_map_view.segment_type_list
+        custom_map_view.segment_type_list,
+        custom_map_view.metro_radius,
+        custom_map_view.tourist_radius
     )
     
     return iframe
