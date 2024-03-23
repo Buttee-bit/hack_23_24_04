@@ -2,7 +2,7 @@ import folium
 from folium.plugins import MarkerCluster
 from folium import FeatureGroup
 from folium import plugins
-from shared.models import Reality, PoiData, MetroStation, Tourist_attractions
+from shared.models import Reality, PoiData, MetroStation, Tourist_attractions, Distance_metro, Distance_attraction
 from .db import get_sync_session
 from sqlalchemy import and_,delete, desc, func, insert, select, update
 
@@ -85,7 +85,8 @@ class MapCreation:
         folium.TileLayer(
             tiles='https://tiles.openrailwaymap.org/standard/{z}/{x}/{y}.png',
             attr='OpenRailwayMap',
-            name='OpenRailwayMap'
+            name='OpenRailwayMap',
+            show=False
         ).add_to(self.map)
 
         folium.TileLayer(
@@ -93,7 +94,8 @@ class MapCreation:
             attr='Esri',
             name='Esri Satellite',
             overlay=False,
-            control=True
+            control=True,
+            show=False
         ).add_to(self.map)
         
         folium.TileLayer('openstreetmap').add_to(self.map)
@@ -106,12 +108,12 @@ class MapCreation:
         data = data.scalars().all()
         
         for station in data:
-            folium.Marker(
-            location=[station.lat, station.lon],
-            popup=station.name_station,
-            tooltip=station.name_station,
-            icon=folium.Icon(color="blue", icon="globe"),
-            ).add_to(self.metro_points)
+            # folium.Marker(
+            # location=[station.lat, station.lon],
+            # popup=station.name_station,
+            # tooltip=station.name_station,
+            # icon=folium.Icon(color="blue", icon="globe"),
+            # ).add_to(self.metro_points)
             
             folium.Circle(
                 location=[station.lat, station.lon],
@@ -133,12 +135,12 @@ class MapCreation:
         
         for place in data:
             if place.lat and place.lon:
-                folium.Marker(
-                location=[place.lat, place.lon],
-                popup=place.name,
-                tooltip=place.name,
-                icon=folium.Icon(color="orange", icon="camera"),
-                ).add_to(self.tourist_points)
+                # folium.Marker(
+                # location=[place.lat, place.lon],
+                # popup=place.name,
+                # tooltip=place.name,
+                # icon=folium.Icon(color="orange", icon="camera"),
+                # ).add_to(self.tourist_points)
                 
                 folium.Circle(
                     location=[place.lat, place.lon],
@@ -152,43 +154,65 @@ class MapCreation:
                     popup=f"Достопримечательность: {place.name}",
                     tooltip=f'Близкая к достопримечательности "{place.name}" область',
                 ).add_to(self.tourist_points)
-        
-    @staticmethod
-    def read_data(
-        poi_path: str = "poi.csv",
-        realty_path: str = "realty.csv"
-        ):
-        
-        poi = pd.read_csv(poi_path, sep = '|')
-        realty = pd.read_csv(realty_path, sep = ',')
-        
-        return poi, realty
     
     @staticmethod
     def get_realty_popup(row: Reality):
         popup = ''
-        popup += f"Адрес: {row.address}\n"
-        popup += f"Тип объявления: {row.main_type}\n"
-        popup += f"Тип помещения: {row.segment_type}\n"
-        popup += f"Площадь: {row.total_arena}\n"
-        popup += f"Этаж: {row.floor}\n"
-        popup += f"Стоимость: {row.lease_price}\n"
-        popup += f"Источник: {row.source_info}\n"
-        popup += f"Ссылка: <a href={row.additional_info}target='_blank'>Ссылка</a>"
-        popup += f"Дата публикации: {row.update_date}\n"
+        popup += f"<p>Адрес: {row.address}</p>"
+        popup += f"<p>Тип объявления: {row.main_type}</p>"
+        popup += f"<p>Тип помещения: {row.segment_type}</p>"
+        popup += f"<p>Площадь: {row.total_arena}</p>"
+        popup += f"<p>Этаж: {row.floor}</p>"
+        popup += f"<p>Стоимость: {row.lease_price}</p>"
+        popup += f"<p>Источник: {row.source_info}</p>"
+        popup += f"<p>Ссылка: <a href={row.additional_info}target='_blank'>Ссылка</a></p>"
+        popup += f"<p>Дата публикации: {row.update_date}</p>"
+        popup += f"""<iframe id="inlineFrameExample"
+                    title="Inline Frame Example"
+                    width="300"
+                    height="200"
+                    src="https://ya.ru/">
+                </iframe>
+                """
 
         return popup
+    
+    def validate_by_metro(self, id, metro_radius):
+        metro_stmt = select(Distance_metro).where(Distance_metro.id_poe == id)
+        
+        metro = self.session.execute(metro_stmt)
+        metro = metro.scalars().all()[0]
+        
+        if metro.distance <= metro_radius:
+            return True
+        
+        return False 
+    
+    def validate_by_tourist(self, id, tourist_radius):
+        metro_stmt = select(Distance_attraction).where(Distance_attraction.id_reality == id)
+        
+        tourist = self.session.execute(metro_stmt)
+        tourist = tourist.scalars().all()[0]
+        
+        if tourist.distance <= tourist_radius:
+            return True
+        
+        return False 
 
     def search_by_params(
         self,
-        price_min: int = 100,
-        price_max: int = 1000,
-        square_min: int = 10,
-        square_max: int = 100,
-        floor_min: float = 1.0,
-        floor_max: float = 3.0,
-        segment_type_list: list[str] = ['Офисные', 'Производственные', 'Торговые', 'Иные']
+        price_min: int,
+        price_max: int,
+        square_min: int,
+        square_max: int,
+        floor_min: float,
+        floor_max: float,
+        segment_type_list: list[str],
+        metro_radius: int,
+        tourist_radius: int
         ):
+        
+        result = list()
         
         stmt = select(Reality).where(
             and_(
@@ -200,20 +224,27 @@ class MapCreation:
         )
         data = self.session.execute(stmt)
         data = data.scalars().all()
-        print(len(data))
-        return data
+        
+        print(f'До радиусов {len(data)}')
+        
+        for el in data:
+            if self.validate_by_metro(el.id, metro_radius) and self.validate_by_tourist(el.id, tourist_radius):
+                result.append(el)
+                
+        print(f'После радиусов {len(result)}')
+        return result
         
     def build_map(
         self,
         price_min: int = 100,
         price_max: int = 1000,
         square_min: int = 10,
-        square_max: int = 1000,
+        square_max: int = 100,
         floor_min: float = 1.0,
         floor_max: float = 5.0,
         segment_type_list: list[str] = ['Офисные', 'Производственные', 'Торговые', 'Иные'],
         metro_radius: int = 1000,
-        tourist_radius: int = 500
+        tourist_radius: int = 1000
         ):
         
         self.add_metro(metro_radius)
@@ -226,10 +257,14 @@ class MapCreation:
             square_max=square_max,
             floor_min=floor_min,
             floor_max=floor_max,
-            segment_type_list=segment_type_list
+            segment_type_list=segment_type_list,
+            metro_radius=metro_radius,
+            tourist_radius=tourist_radius
         )
         
         for el in data:
+            
+            print(el.address)
         
             folium.Marker(
                 location=[el.point_y, el.point_x],
