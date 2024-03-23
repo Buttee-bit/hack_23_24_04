@@ -71,3 +71,130 @@ class PoiData(Base):
         ARRAY(String),
         nullable=True
     )
+
+
+class Reality(Base):
+    __tablename__ = 'reality_data'
+
+    id: Mapped[int] = mapped_column(
+        'id',
+        Integer,
+        primary_key=True,
+        autoincrement=True
+    )
+
+    point_x: Mapped[float] = mapped_column(
+        'point_x',
+        Float,
+        nullable=True
+    )
+
+    point_y: Mapped[float] = mapped_column(
+        'point_y',
+        Float,
+        nullable=True
+    )
+
+    main_type: Mapped[str] = mapped_column(
+        'main_type',
+        String, 
+        nullable=True
+    )
+
+    segment_type: Mapped[str] = mapped_column(
+        'segment_type',
+        String, 
+        nullable=True
+    )
+
+    entity_type: Mapped[str] = mapped_column(
+        'entity_type',
+        String, 
+        nullable=True
+    )
+
+    total_arena: Mapped[int] = mapped_column(
+        'total_arena',
+        Integer,
+        nullable=True
+    )
+
+    floor: Mapped[float] = mapped_column(
+        'floor',
+        Float,
+        nullable=True
+    )
+    lease_price: Mapped[int] = mapped_column(
+        'lease_price',
+        Integer,
+        nullable=True
+    )
+
+    additional_info: Mapped[str] = mapped_column(
+        'additional_info', 
+        String,
+        nullable=True
+    )
+
+    source_info: Mapped[str] = mapped_column(
+        'source_info', 
+        String,
+        nullable=True
+    )
+
+    address: Mapped[str] = mapped_column(
+        'address', 
+        String,
+        nullable=True
+    )
+
+    update_date: Mapped[datetime] = mapped_column(
+        'update_date',
+        DateTime, 
+        nullable=True
+    )
+
+
+class MetroStation(Base):
+    __tablename__ = 'metroStation'
+    id: Mapped[int] = mapped_column(
+        'id',
+        Integer,
+        primary_key=True,
+        autoincrement=True
+    )
+
+    hex_color: Mapped[str] = mapped_column(
+        'hex_color',
+        String, 
+        nullable=True
+    )
+
+    name_line: Mapped[str] = mapped_column(
+        'name_line',
+        String,
+        nullable=True
+    )
+    name_station: Mapped[str] = mapped_column(
+        'name_station',
+        String,
+        nullable=True
+    )
+
+    lat: Mapped[float] = mapped_column(
+        'lat',
+        Float,
+        nullable=True
+    )
+
+    lon: Mapped[float] = mapped_column(
+        'lon',
+        Float,
+        nullable=True
+    )
+    
+    order: Mapped[int] = mapped_column(
+        'order', 
+        Integer,
+        nullable=True
+    )

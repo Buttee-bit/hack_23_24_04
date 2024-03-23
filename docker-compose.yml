@@ -1,0 +1,74 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    expose:
+      - 8000
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env.dev
+    depends_on:
+      - db
+    command: uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload
+    networks:
+      - ainna-network
+
+  db:
+    image: "postgres:15"
+    env_file:
+      - .env.dev
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ['CMD', 'pg_isready', '-U', 'postgres']
+      interval: 5s
+      timeout: 20s
+      retries: 5
+    networks:
+      - ainna-network
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    env_file:
+      - .env.dev
+    ports:
+      - "8081:80"
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./pgadmin_servers.json:/pgadmin4/servers.json
+      - pgadmin_sessions:/var/lib/pgadmin
+      - pgadmin_data:/pgadmin
+    networks:
+      - ainna-network
+
+  alembic:
+    build:
+      context: .
+      dockerfile: alembic/Dockerfile
+    env_file:
+      - .env.dev
+    depends_on:
+      db:
+        condition: service_healthy
+    command: alembic upgrade head
+    profiles:
+      - deploy
+    networks:
+      - ainna-network
+
+volumes:
+  postgres_data:
+  pgadmin_data:
+  pgadmin_sessions:
+
+networks:
+  ainna-network:
+    driver: bridge
