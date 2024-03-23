@@ -1,9 +1,12 @@
+import Filter from '@/components/map/Filter'
+import { Paper } from '@mui/material'
+
 const MapPage = () => {
 	return (
-		<main className='h-screen'>
+		<main className='h-screen p-5 max-w-[1900px] mx-auto'>
 			<div className='flex gap-10 justify-between h-full'>
-				<div className='bg-red-300 w-1/6 h-full'></div>
-				<div className='h-96 w-full bg-cyan-300'></div>
+				<Filter />
+				<Paper className='h-full w-full'></Paper>
 			</div>
 		</main>
 	)
