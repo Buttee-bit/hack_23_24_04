@@ -100,10 +100,10 @@ async def data_metro(session: AsyncSession = Depends(get_async_session)):
             await session.commit()
     return 200
 
-# @router.post('/data_tourist_attractions')
-# async def data_metro():
-#     get_data_csv()
-#     return 200
+@router.post('/data_tourist_attractions')
+async def data_metro():
+    get_data_csv()
+    return 200
 
 @router.post('/distance_metro')
 async def distance_metro(session: AsyncSession = Depends(get_async_session)):
@@ -157,28 +157,30 @@ async def distance_attraction(session: AsyncSession = Depends(get_async_session)
 
     for poi in data_poi:
         min_distance = float('inf')
-        id_attractions = 0
+        id_attra = 0
         point_poi = (poi.point_y, poi.point_x) 
-        for metro in data_metro:
-            point_metro = (metro.lat, metro.lon)
+        for attractions in data_attractions:
+            point_metro = (attractions.lat, attractions.lon)
             distance_poi_metro = geodesic(point_poi, point_metro).meters
 
             if distance_poi_metro < min_distance:
-                id_metro = metro.id
+                id_attractions = attractions.id
                 min_distance = distance_poi_metro
-        
-        distance_instance = Distance_attraction(
-            id_attraction=poi.id,
-            id_reality=id_metro,
-            distance=round(min_distance, 2)
-        )
+
+
+
         try:
+            distance_instance = Distance_attraction(
+            id_attraction=id_attractions,
+            id_reality=poi.id,
+            distance=round(min_distance, 2)
+            )
+            print(distance_instance)
             session.add(distance_instance)
-            await session.commit()  # Асинхронный метод без await
+            await session.commit()  
         except IntegrityError as e:
             print(f"Ошибка IntegrityError: {e}")
-            await session.rollback()  # Асинхронный метод без await
-
+            await session.rollback()
         
     return 200
 

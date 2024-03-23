@@ -2,7 +2,7 @@ import folium
 from folium.plugins import MarkerCluster
 from folium import FeatureGroup
 from folium import plugins
-from shared.models import Reality, PoiData, MetroStation
+from shared.models import Reality, PoiData, MetroStation, Tourist_attractions
 from .db import get_sync_session
 from sqlalchemy import and_,delete, desc, func, insert, select, update
 
@@ -34,8 +34,8 @@ class MapCreation:
         self.session = get_sync_session()
         
         self.map = folium.Map(
-            width=width,
-            height=height,
+            # width=width,
+            # height=height,
             location=location,
             tiles=tiles,
             zoom_start=zoom_start,
@@ -64,7 +64,8 @@ class MapCreation:
 
         self.marker_cluster = MarkerCluster(name='Конкуренты', show=False).add_to(self.map)
         self.metro_points = FeatureGroup(name='Метро', show=False).add_to(self.map)
-        self.marker_points = FeatureGroup(name='Точки интереса', show=False).add_to(self.map)
+        self.tourist_points = FeatureGroup(name='Достопримечательности', show=False).add_to(self.map)
+        self.marker_points = FeatureGroup(name='Точки интереса').add_to(self.map)
 
         plugins.Fullscreen().add_to(self.map)
         plugins.LocateControl().add_to(self.map)
@@ -99,7 +100,7 @@ class MapCreation:
 
         folium.LayerControl().add_to(self.map)
         
-    def add_metro(self):
+    def add_metro(self, metro_radius: int):
         stmt = select(MetroStation)
         data = self.session.execute(stmt)
         data = data.scalars().all()
@@ -114,16 +115,43 @@ class MapCreation:
             
             folium.Circle(
                 location=[station.lat, station.lon],
-                radius=1000,
+                radius=metro_radius,
                 color="blue",
                 weight=1,
-                fill_opacity=0.2,
-                opacity=1,
+                fill_opacity=0.1,
+                opacity=0.5,
                 fill_color="blue",
                 fill=False,  # gets overridden by fill_color
                 popup=f"Метро: {station.name_station}",
                 tooltip=f"Близкая к метро {station.name_station} область",
             ).add_to(self.metro_points)
+            
+    def add_tourist(self, tourist_radius: int):
+        stmt = select(Tourist_attractions)
+        data = self.session.execute(stmt)
+        data = data.scalars().all()
+        
+        for place in data:
+            if place.lat and place.lon:
+                folium.Marker(
+                location=[place.lat, place.lon],
+                popup=place.name,
+                tooltip=place.name,
+                icon=folium.Icon(color="orange", icon="camera"),
+                ).add_to(self.tourist_points)
+                
+                folium.Circle(
+                    location=[place.lat, place.lon],
+                    radius=tourist_radius,
+                    color="orange",
+                    weight=1,
+                    fill_opacity=0.1,
+                    opacity=0.5,
+                    fill_color="orange",
+                    fill=False,  # gets overridden by fill_color
+                    popup=f"Достопримечательность: {place.name}",
+                    tooltip=f'Близкая к достопримечательности "{place.name}" область',
+                ).add_to(self.tourist_points)
         
     @staticmethod
     def read_data(
@@ -135,16 +163,6 @@ class MapCreation:
         realty = pd.read_csv(realty_path, sep = ',')
         
         return poi, realty
-    
-    @staticmethod  
-    def get_poi_popup(row):
-        popup = ''
-        popup += f"Название: {row['name']}\n"
-        popup += f"Адрес: {row['address_name']}\n"
-        popup += f"Комметарий: {row['address_comment']}\n"
-        popup += f"Категории: {row['rubrics']}\n"
-
-        return popup
     
     @staticmethod
     def get_realty_popup(row: Reality):
@@ -193,10 +211,13 @@ class MapCreation:
         square_max: int = 1000,
         floor_min: float = 1.0,
         floor_max: float = 5.0,
-        segment_type_list: list[str] = ['Офисные', 'Производственные', 'Торговые', 'Иные']
+        segment_type_list: list[str] = ['Офисные', 'Производственные', 'Торговые', 'Иные'],
+        metro_radius: int = 1000,
+        tourist_radius: int = 500
         ):
         
-        self.add_metro()
+        self.add_metro(metro_radius)
+        self.add_tourist(tourist_radius)
         
         data: list[Reality] = self.search_by_params(
             price_min=price_min,
@@ -217,8 +238,8 @@ class MapCreation:
                 icon=folium.Icon(color="red", icon="flash"),
                 ).add_to(self.marker_points)
         
-        self.map.get_root().width = f"{self.width}px"
-        self.map.get_root().height = f"{self.height}px"
+        # self.map.get_root().width = f"{self.width}px"
+        # self.map.get_root().height = f"{self.height}px"
         iframe = self.map.get_root()._repr_html_()
 
         point1 = (59.94, 30.22) # Пример координат первой точки
