@@ -1,4 +1,5 @@
 import App from "@/App"
+import DashboardPage from "@/pages/dashboard/DashboardPage"
 import { createBrowserRouter, RouterProvider } from "react-router-dom"
 
 const router = createBrowserRouter([
@@ -8,14 +9,14 @@ const router = createBrowserRouter([
 		errorElement: <>error</>,
 		children: [
 			{
-				path: "dashboard",
-				element: <>dasb</>
-			},
-			{
 				path: "about",
 				element: <>abt</>
 			}
 		]
+	},
+	{
+		path: "dashboard",
+		element: <DashboardPage />
 	}
 ])
 
