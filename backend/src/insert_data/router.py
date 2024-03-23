@@ -38,21 +38,40 @@ async def data_reality(session: AsyncSession = Depends(get_async_session)):
     data = load_data_reality()
     for index, row in data.iterrows():
         stmt = insert(Reality)
-        stmt = stmt.values(
-            point_x = row['point_x'], 
-            point_y = row['point_y'], 
-            main_type = row['main_type'], 
-            segment_type = row['segment_type'], 
-            entity_type = row['entity_name'], 
-            total_arena = row['total_area'], 
-            floor = row['floor'], 
-            lease_price = row['lease_price'], 
-            additional_info = row['additional_info'], 
-            source_info = row['source_info'], 
-            address = row['address'], 
-            update_date = pd.to_datetime(row['update_date'])    
+
+        print(row['floor'])
+        print(type(row['floor']))
+        if pd.isnull(row['floor']):
+            stmt = stmt.values(
+                point_x = row['point_x'], 
+                point_y = row['point_y'], 
+                main_type = row['main_type'], 
+                segment_type = row['segment_type'], 
+                entity_type = row['entity_name'], 
+                total_arena = row['total_area'], 
+                lease_price = row['lease_price'], 
+                additional_info = row['additional_info'], 
+                source_info = row['source_info'], 
+                address = row['address'], 
+                update_date = pd.to_datetime(row['update_date'])    
         )
-        
+        else:
+
+            stmt = stmt.values(
+                point_x = row['point_x'], 
+                point_y = row['point_y'], 
+                main_type = row['main_type'], 
+                segment_type = row['segment_type'], 
+                entity_type = row['entity_name'], 
+                total_arena = row['total_area'], 
+                floor = row['floor'], 
+                lease_price = row['lease_price'], 
+                additional_info = row['additional_info'], 
+                source_info = row['source_info'], 
+                address = row['address'], 
+                update_date = pd.to_datetime(row['update_date'])    
+            )
+            
         await session.execute(stmt)
         await session.commit()
 

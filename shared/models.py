@@ -119,9 +119,9 @@ class Reality(Base):
         nullable=True
     )
 
-    floor: Mapped[int] = mapped_column(
+    floor: Mapped[float] = mapped_column(
         'floor',
-        Integer,
+        Float,
         nullable=True
     )
     lease_price: Mapped[int] = mapped_column(
