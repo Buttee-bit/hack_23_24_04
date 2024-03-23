@@ -21,7 +21,14 @@ router = APIRouter(
 
 
 @router.get('/custom_map')
-async def custom_map(
+async def custom_map():
+    iframe = map.build_map()
+    
+    return iframe
+
+
+@router.post('/custom_map')
+async def custom_map_params(
     price_min: int,
     price_max: int,
     square_min: int,
