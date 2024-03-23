@@ -1,13 +1,14 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
-from fastapi.staticfiles import StaticFiles
+from .test.router import router as test_router
+
+
 
 app = FastAPI(
     title="HACK API"
 )
 
-app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 
 app.add_middleware(SessionMiddleware, secret_key="secret-string")
 
@@ -28,3 +29,5 @@ app.add_middleware(
     allow_headers=["Content-Type", "Access-Control-Allow-Headers",
                    "Access-Control-Allow-Origin", "Authorization"],
 )
+
+app.include_router(test_router)
