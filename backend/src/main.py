@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
 from .test.router import router as test_router
 from .insert_data.router import router as insert_router
-
+from .map.router import router as custom_router
 
 app = FastAPI(
     title="HACK API"
@@ -32,3 +32,4 @@ app.add_middleware(
 
 app.include_router(test_router)
 app.include_router(insert_router)
+app.include_router(custom_router)
