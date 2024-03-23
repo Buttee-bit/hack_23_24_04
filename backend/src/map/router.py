@@ -6,6 +6,10 @@ from sqlalchemy import and_, delete, desc, func, insert, select, update
 from sqlalchemy.orm import selectinload
 from ..datebase import get_async_session
 from sqlalchemy.ext.asyncio import AsyncSession
+from .schemas import CustomMapView  
+from typing import Any
+
+
 
 from .geo_market.map_creation import MapCreation
 
@@ -28,17 +32,16 @@ async def custom_map():
 
 
 @router.post('/custom_map')
-async def custom_map_params(
-    price_min: int,
-    price_max: int,
-    square_min: int,
-    square_max: int,
-    floor_min: float,
-    floor_max: float,
-    segment_type_list: list[str] = ['Офисные',
-                                    'Производственные', 'Торговые', 'Иные']
-):
-    iframe = map.build_map(price_min, price_max, square_min, square_max, floor_min, floor_max, segment_type_list)
+async def custom_map_params(custom_map_view: CustomMapView) -> Any:
+    iframe = map.build_map(
+        custom_map_view.price_min, 
+        custom_map_view.price_max, 
+        custom_map_view.square_min, 
+        custom_map_view.square_max, 
+        custom_map_view.floor_min, 
+        custom_map_view.floor_max, 
+        custom_map_view.segment_type_list
+    )
     
     return iframe
 
