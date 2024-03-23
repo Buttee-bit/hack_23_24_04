@@ -9,7 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from .schemas import CustomMapView  
 from typing import Any
 
-
+import logging
 
 from .geo_market.map_creation import MapCreation
 
@@ -44,7 +44,7 @@ async def custom_map_params(custom_map_view: CustomMapView) -> Any:
         custom_map_view.metro_radius,
         custom_map_view.tourist_radius
     )
-    
+    logging.warning(custom_map_view)
     return iframe
 
 # def visualize_polygons(geometry):
