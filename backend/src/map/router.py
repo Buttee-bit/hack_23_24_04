@@ -2,7 +2,7 @@ from pathlib import Path
 import sys
 from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
-from sqlalchemy import and_,delete, desc, func, insert, select, update
+from sqlalchemy import and_, delete, desc, func, insert, select, update
 from sqlalchemy.orm import selectinload
 from ..datebase import get_async_session
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -14,15 +14,25 @@ from ..models import PoiData
 
 map = MapCreation()
 
-router = APIRouter (
+router = APIRouter(
     prefix='/custom_view',
-    tags= ['custom_view']
+    tags=['custom_view']
 )
 
 
 @router.get('/custom_map')
-async def custom_map():
-    iframe = map.build_map()
+async def custom_map(
+    price_min: int,
+    price_max: int,
+    square_min: int,
+    square_max: int,
+    floor_min: float,
+    floor_max: float,
+    segment_type_list: list[str] = ['Офисные',
+                                    'Производственные', 'Торговые', 'Иные']
+):
+    iframe = map.build_map(price_min, price_max, square_min, square_max, floor_min, floor_max, segment_type_list)
+    
     return iframe
 
 # def visualize_polygons(geometry):
@@ -128,4 +138,3 @@ async def custom_map():
 # polygon_krd = polygon_krd[(polygon_krd['name'] == 'Санкт-Петербург')]
 # # посмотрим что получилось
 # visualize_polygons(polygon_krd['geometry'])
-

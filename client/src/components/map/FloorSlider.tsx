@@ -2,8 +2,7 @@ import { floorMarks } from '@/consts/rangeValues'
 import { Slider } from '@mui/material'
 import React from 'react'
 
-export default function FloorSlider() {
-	const [value, setValue] = React.useState([1, 50])
+export default function FloorSlider({value, setValue}) {
 
 	const handleChange = (event, newValue) => {
 		setValue(newValue)

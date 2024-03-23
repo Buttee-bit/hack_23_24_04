@@ -2,8 +2,7 @@ import { priceMarks } from '@/consts/rangeValues'
 import { Slider } from '@mui/material'
 import React from 'react'
 
-export default function PriceSlider() {
-	const [value, setValue] = React.useState([1, 25])
+export default function PriceSlider({value,setValue}) {
 
 	const handleChange = (event, newValue) => {
 		setValue(newValue)

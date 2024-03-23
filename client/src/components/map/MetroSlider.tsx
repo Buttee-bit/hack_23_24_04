@@ -33,8 +33,7 @@ function valuetext(value: number) {
 	return `${value}км`
 }
 
-export default function MetroSlider() {
-	const [value, setValue] = React.useState(100)
+export default function MetroSlider({value,setValue}) {
 
 	const handleChange = (event, newValue) => {
 		setValue(newValue)

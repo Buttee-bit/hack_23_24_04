@@ -15,7 +15,7 @@ const Filter = () => {
 						Фильтры
 					</h2>
 					<div className='max-w-5xl mx-auto px-4 mt-2'>
-						{filters.map((item, index) => (
+						{/* {filters.map((item, index) => (
 							<HoverEffect
 								key={index}
 								hoveredIndex={hoveredIndex}
@@ -24,9 +24,11 @@ const Filter = () => {
 							>
 								{item.component}
 							</HoverEffect>
-						))}
+						))} */}
+
 					</div>
 				</ScrollArea>
+				
 			</Paper>
 		</>
 	)
