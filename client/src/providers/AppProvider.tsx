@@ -1,5 +1,5 @@
 import App from "@/App"
-import DashboardPage from "@/pages/dashboard/DashboardPage"
+import MapPage from "@/pages/map/MapPage"
 import { createBrowserRouter, RouterProvider } from "react-router-dom"
 
 const router = createBrowserRouter([
@@ -15,8 +15,8 @@ const router = createBrowserRouter([
 		]
 	},
 	{
-		path: "dashboard",
-		element: <DashboardPage />
+		path: "map",
+		element: <MapPage />
 	}
 ])
 
