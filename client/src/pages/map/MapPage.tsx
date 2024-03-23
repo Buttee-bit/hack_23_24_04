@@ -1,4 +1,4 @@
-import Filter from '@/components/map/Filter'
+// import Filter from '@/components/map/Filter'
 import { Button, Paper } from '@mui/material'
 import { MapApi } from '@/pages/map/services/MapApi'
 import { Toaster } from '@/components/ui/sonner'
@@ -20,6 +20,10 @@ const MapPage = () => {
 	const [metroValue, setMetroValue] = useState(100)
 	const [priceValue, setPriceValue] = useState([1, 25])
 	const [sizeValue, setSizeValue] = useState([1, 25])
+	const [goodCategories, setGoodCategories] = useState([])
+	const [badCategories, setBadCategories] = useState([])
+
+	const handleClick = () => {}
 
 	console.log(HTML)
 	return (
@@ -56,8 +60,22 @@ const MapPage = () => {
 								value={entertainmentValue}
 								setValue={setEntertainmentValue}
 							/>
-							<CategoryFilter />
-							<Button>
+							<CategoryFilter
+								goodCategories={goodCategories}
+								badCategories={badCategories}
+								setGoodCategories={setGoodCategories}
+								setBadCategories={setBadCategories}
+							/>
+							<Button
+								variant='contained'
+								sx={{
+									mt: 2,
+									display: 'block',
+									mx: 'auto'
+								}}
+								// ОТПРАВКА ФИЛЬТРОВ НА БЭК СЮДА
+								onClick={() => handleClick()}
+							>
 								<span>Сохранить</span>
 							</Button>
 						</div>

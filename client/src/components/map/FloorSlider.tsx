@@ -3,7 +3,7 @@ import { Slider } from '@mui/material'
 import { FC } from 'react'
 
 interface Props {
-	value: number
+	value: any
 	setValue: any
 }
 

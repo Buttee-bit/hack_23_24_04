@@ -1,23 +1,27 @@
-import * as React from 'react'
-
 import GoodCategories from './GoodCategories'
 import BadCategories from './BadCategories'
 import { categories as data } from '@/consts/categories'
-import { Button } from '@mui/material'
+import { FC } from 'react'
 
-export default function CategoryFilter() {
-	const [goodCategories, setGoodCategories] = React.useState([])
-	const [badCategories, setBadCategories] = React.useState([])
+interface Props {
+	goodCategories: any
+	setGoodCategories: any
+	badCategories: any
+	setBadCategories: any
+}
 
-	console.log(goodCategories, badCategories)
-
+const CategoryFilter: FC<Props> = ({
+	goodCategories,
+	setGoodCategories,
+	badCategories,
+	setBadCategories
+}) => {
 	return (
 		<>
 			<GoodCategories
 				categories={goodCategories}
 				setCategories={setGoodCategories}
 				altCategories={badCategories}
-				setAltCategories={setBadCategories}
 				data={data}
 			/>
 			<BadCategories
@@ -29,3 +33,5 @@ export default function CategoryFilter() {
 		</>
 	)
 }
+
+export default CategoryFilter

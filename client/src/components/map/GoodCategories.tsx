@@ -9,7 +9,7 @@ import { TransitionProps } from '@mui/material/transitions'
 import { toast } from 'sonner'
 
 import { Button as ShadButton } from '@/components/ui/button'
-import React from 'react'
+import React, { FC } from 'react'
 
 const Transition = React.forwardRef(function Transition(
 	props: TransitionProps & {
@@ -20,22 +20,28 @@ const Transition = React.forwardRef(function Transition(
 	return <Slide direction='up' ref={ref} {...props} />
 })
 
-const GoodCategories = ({
+interface Props {
+	categories: string[]
+	setCategories: any
+	data: any
+	altCategories: any
+}
+
+const GoodCategories: FC<Props> = ({
 	categories,
 	setCategories,
 	data,
-	altCategories,
-	setAltCategories
+	altCategories
 }) => {
 	const [open, setOpen] = React.useState(false)
 
 	const handleCategory = (text: string) => {
 		const inAltArray = altCategories.includes(text)
 		if (!inAltArray) {
-			setCategories(prev => {
+			setCategories((prev: any) => {
 				const inArray = prev.includes(text)
 				if (inArray) {
-					return prev.filter(item => item !== text)
+					return prev.filter((item: any) => item !== text)
 				} else {
 					return [...prev, text]
 				}
@@ -98,7 +104,7 @@ const GoodCategories = ({
 						</Toolbar>
 					</AppBar>
 					<div className='flex flex-wrap gap-4 mt-4 p-4'>
-						{data.map((item, index) => {
+						{data.map((item: any, index: any) => {
 							const inArray = categories.includes(item)
 
 							return (
