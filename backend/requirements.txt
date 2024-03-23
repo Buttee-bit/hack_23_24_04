@@ -23,3 +23,7 @@ cryptography==41.0.7
 passlib==1.7.4
 pandas==2.2.0
 folium==0.16.0
+psycopg2-binary
+geopandas==0.14.3
+numpy==1.26.2
+osmnx==1.9.1

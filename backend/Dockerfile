@@ -5,5 +5,6 @@ RUN apt-get update
 FROM backend
 COPY ../backend /app/backend
 COPY ../shared /app/shared
+
 ENV PYTHONPATH "${PYTHONPATH}:/app"
 WORKDIR /app/backend
