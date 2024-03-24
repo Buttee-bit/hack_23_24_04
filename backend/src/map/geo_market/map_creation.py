@@ -65,7 +65,7 @@ class MapCreation:
         self.marker_cluster = MarkerCluster(name='Конкуренты', show=False).add_to(self.map)
         self.metro_points = FeatureGroup(name='Метро', show=False).add_to(self.map)
         self.tourist_points = FeatureGroup(name='Достопримечательности', show=False).add_to(self.map)
-        self.marker_points = FeatureGroup(name='Точки интереса').add_to(self.map)
+        self.marker_points = MarkerCluster(name='Точки интереса').add_to(self.map)
 
         plugins.Fullscreen().add_to(self.map)
         plugins.LocateControl().add_to(self.map)
