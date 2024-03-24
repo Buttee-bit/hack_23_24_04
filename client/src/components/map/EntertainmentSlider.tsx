@@ -7,24 +7,24 @@ const marks = [
 		label: '100м'
 	},
 	{
-		value: 1000,
+		value: 250,
 		label: ''
 	},
 	{
-		value: 2500,
-		label: '2.5км'
+		value: 500,
+		label: '500м'
 	},
 	{
-		value: 5000,
-		label: '5км'
+		value: 1000,
+		label: '1км.'
 	},
 	{
-		value: 7500,
-		label: '7.5км'
+		value: 1500,
+		label: '1.5км'
 	},
 	{
-		value: 10000,
-		label: '10км'
+		value: 2000,
+		label: '2км'
 	}
 ]
 
@@ -60,7 +60,7 @@ const EntertainmentSlider: FC<Props> = ({ value, setValue }) => {
 				value={value}
 				onChange={handleChange}
 				min={100}
-				max={10000}
+				max={2000}
 			/>
 			<p className='mt-2 text-center'>до {value} м</p>
 		</div>
