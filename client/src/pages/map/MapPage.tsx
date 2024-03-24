@@ -2,7 +2,7 @@
 import { Button, Paper } from '@mui/material'
 import { MapApi } from '@/pages/map/services/MapApi'
 import { Toaster } from '@/components/ui/sonner'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import BuildingType from '@/components/map/BuildingType'
 import CategoryFilter from '@/components/map/CategoryFilter'
@@ -11,6 +11,9 @@ import FloorSlider from '@/components/map/FloorSlider'
 import MetroSlider from '@/components/map/MetroSlider'
 import PriceSlider from '@/components/map/PriceSlider'
 import SizeSlider from '@/components/map/SizeSlider'
+import Loader from '@/components/ui/loader'
+import { Button as ShadButton } from '@/components/ui/button'
+import ArrowCircleDownIcon from '@mui/icons-material/ArrowCircleDown'
 
 interface IObject {
 	point_x: number
@@ -29,6 +32,7 @@ interface IObject {
 }
 
 const MapPage = () => {
+	const dataRef = useRef()
 	const { data: initialHTML, isLoading: initialHTMLLoading } =
 		MapApi.useGetCustomViewQuery('')
 	const [content, setContent] = useState('')
@@ -48,7 +52,7 @@ const MapPage = () => {
 	const [badCategories, setBadCategories] = useState([])
 	const [categoriesSlider, setCategoriesSlider] = useState(100)
 
-	const [postData, { data: postDataResponse }] =
+	const [postData, { data: postDataResponse, isLoading: isPostDataLoading }] =
 		MapApi.usePostCustomViewMutation()
 
 	useEffect(() => {
@@ -84,6 +88,12 @@ const MapPage = () => {
 			hate: badCategories,
 			select_radius: categoriesSlider
 		})
+	}
+
+	function handleScroll() {
+		if (dataRef) {
+			dataRef.current.scrollIntoView({ behavior: 'smooth' })
+		}
 	}
 
 	return (
@@ -135,6 +145,7 @@ const MapPage = () => {
 									display: 'block',
 									mx: 'auto'
 								}}
+								disabled={isPostDataLoading ? true : false}
 								// ОТПРАВКА ФИЛЬТРОВ НА БЭК СЮДА
 								onClick={() => handleClick()}
 							>
@@ -143,13 +154,19 @@ const MapPage = () => {
 						</div>
 					</ScrollArea>
 				</Paper>
-				<Paper
-					className='h-full w-full bg-red-300'
-					dangerouslySetInnerHTML={{ __html: content }}
-				>
+
+				<Paper className='h-full w-full bg-red-300 overflow-hidden relative'>
+					{initialHTMLLoading && <Loader />}
+					<ShadButton
+						className='absolute z-50 bottom-14 p-10 left-[50%] text-[60px] rounded-full'
+						size='icon'
+					>
+						<ArrowCircleDownIcon fontSize='inherit' />
+					</ShadButton>
+					<div dangerouslySetInnerHTML={{ __html: content }}></div>
 					{/* Контент будет вставлен сюда */}
 				</Paper>
-				<Paper>
+				<Paper sx={{ mt: 5 }} ref={dataRef}>
 					{objectContent?.map((object: IObject) => (
 						<>
 							<div>{object.address}</div>
