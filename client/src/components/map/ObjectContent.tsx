@@ -20,9 +20,20 @@ const ObjectContent: FC<Props> = ({ data }) => {
 				{data?.map((object: IObject) => (
 					<Card className='w-[500px]'>
 						<CardHeader>
-							<CardTitle>{object.address}e</CardTitle>
+							<CardTitle>
+								<span className='bg-green-200 px-2 m-1'>
+									Адрес:
+								</span>
+								{object.address}e
+							</CardTitle>
 							<CardDescription>
-								<p>{object.additional_info}</p>
+								<a
+									href={object.additional_info}
+									target='_blank'
+									rel='noopener noreferrer'
+								>
+									{object.additional_info}
+								</a>
 							</CardDescription>
 						</CardHeader>
 						<CardContent>
