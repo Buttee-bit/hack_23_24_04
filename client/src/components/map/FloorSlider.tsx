@@ -1,6 +1,6 @@
 import { floorMarks } from '@/consts/rangeValues'
 import { Slider } from '@mui/material'
-import { FC } from 'react'
+import { FC, useState } from 'react'
 
 interface Props {
 	value: any
@@ -8,9 +8,13 @@ interface Props {
 }
 
 const FloorSlider: FC<Props> = ({ value, setValue }) => {
+	const [localValue, setLocalValue] = useState([1, 50])
 	const handleChange = (event: any, newValue: any) => {
-		setValue(newValue)
+		setLocalValue(newValue)
+		setValue(scaleValues(newValue))
 	}
+
+	// console.log(value)
 
 	const scaleValues = (valueArray: any) => {
 		return [scale(valueArray[0]), scale(valueArray[1])]
@@ -38,7 +42,7 @@ const FloorSlider: FC<Props> = ({ value, setValue }) => {
 				<p className='font-medium'>Количество этажей</p>
 			</div>
 			<Slider
-				value={value}
+				value={localValue}
 				min={0}
 				step={25}
 				max={200}
@@ -52,8 +56,8 @@ const FloorSlider: FC<Props> = ({ value, setValue }) => {
 				className='px-10'
 			/>
 			<div className='flex items-center gap-2 justify-center mt-2'>
-				<p>от {Math.round(scaleValues(value)[0])} эт.</p>
-				<p>до {Math.round(scaleValues(value)[1])} эт.</p>
+				<p>от {Math.round(scaleValues(localValue)[0])} эт.</p>
+				<p>до {Math.round(scaleValues(localValue)[1])} эт.</p>
 			</div>
 		</div>
 	)

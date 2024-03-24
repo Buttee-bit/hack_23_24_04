@@ -1,16 +1,21 @@
 import { sizeBigMarks, sizeSmallMarks } from '@/consts/rangeValues'
 import { Slider, Switch } from '@mui/material'
-import React from 'react'
+import { useState } from 'react'
 
 export default function SizeSlider({ value, setValue }) {
-	const [switchSmallSize, setSwitchSmallSize] = React.useState(true)
+	const [switchSmallSize, setSwitchSmallSize] = useState(true)
+	const [localValue, setLocalValue] = useState([1, 50])
 
 	const handleChange = (event: any, newValue: any) => {
-		setValue(newValue)
+		setLocalValue(newValue)
+		setValue(scaleValues(newValue))
 	}
 
 	const handleSwitchChange = () => {
+		setLocalValue([0, 0])
+		switchSmallSize === true ? setValue([1000, 1000]) : setValue([1, 1])
 		setSwitchSmallSize(prev => !prev)
+		// setValue(scaleValues(localValue))
 	}
 
 	const scaleValues = (valueArray: any) => {
@@ -45,6 +50,8 @@ export default function SizeSlider({ value, setValue }) {
 		}
 	}
 
+	console.log(value)
+
 	// console.log(scaleValues(value))
 
 	return (
@@ -56,7 +63,7 @@ export default function SizeSlider({ value, setValue }) {
 				<Switch onChange={handleSwitchChange} color='success' />
 			</div>
 			<Slider
-				value={value}
+				value={localValue}
 				min={0}
 				step={10}
 				max={200}
@@ -70,8 +77,8 @@ export default function SizeSlider({ value, setValue }) {
 				className='px-10'
 			/>
 			<div className='flex items-center gap-2 justify-center mt-2'>
-				<p>от {scaleValues(value)[0]} м.кв.</p>
-				<p>до {scaleValues(value)[1]} м.кв</p>
+				<p>от {scaleValues(localValue)[0]} м.кв.</p>
+				<p>до {scaleValues(localValue)[1]} м.кв</p>
 			</div>
 		</div>
 	)

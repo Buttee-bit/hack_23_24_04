@@ -239,12 +239,12 @@ class MapCreation:
         price_min: int = 100,
         price_max: int = 1000,
         square_min: int = 10,
-        square_max: int = 100,
+        square_max: int = 1000,
         floor_min: float = 1.0,
-        floor_max: float = 5.0,
+        floor_max: float = 10.0,
         segment_type_list: list[str] = ['Офисные', 'Производственные', 'Торговые', 'Иные'],
         metro_radius: int = 1000,
-        tourist_radius: int = 1000
+        tourist_radius: int = 500
         ):
         
         print(price_min)

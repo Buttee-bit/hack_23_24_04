@@ -47,8 +47,6 @@ const BuildingType: FC<Props> = ({ category, setCategory }) => {
 		)
 	}
 
-	console.log(category)
-
 	return (
 		<div>
 			<FormControl fullWidth variant='filled'>

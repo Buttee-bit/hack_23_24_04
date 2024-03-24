@@ -33,11 +33,12 @@ function valuetext(value: number) {
 	return `${value}км`
 }
 
-export default function MetroSlider({value,setValue}) {
-
+export default function MetroSlider({ value, setValue }) {
 	const handleChange = (event, newValue) => {
 		setValue(newValue)
 	}
+
+	// console.log(value)
 
 	return (
 		<div className='px-4'>
