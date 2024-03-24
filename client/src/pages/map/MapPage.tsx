@@ -13,9 +13,10 @@ import PriceSlider from '@/components/map/PriceSlider'
 import SizeSlider from '@/components/map/SizeSlider'
 
 const MapPage = () => {
-	const { data: initialHTML, isLoading: initialHTMLLoading } = MapApi.useGetCustomViewQuery('')
+	const { data: initialHTML, isLoading: initialHTMLLoading } =
+		MapApi.useGetCustomViewQuery('')
 	const [content, setContent] = useState('')
-	const [buildingCategory, setBuildingCategory] = useState<string[]>([])
+	const [buildingCategory, setBuildingCategory] = useState<string[]>(['Офисные', 'Производственные', 'Торговые', 'Иные'])
 	const [floorValue, setFloorValue] = useState([1, 3])
 	const [metroValue, setMetroValue] = useState(100)
 	const [entertainmentValue, setEntertainmentValue] = useState(100)

@@ -4,33 +4,33 @@ import Slider from '@mui/material/Slider'
 
 const marks = [
 	{
-		value: 1,
-		label: '1км'
-	},
-	{
 		value: 100,
-		label: '100км'
+		label: '100м'
 	},
 	{
-		value: 200,
-		label: '200км'
+		value: 1000,
+		label: ''
 	},
 	{
-		value: 300,
-		label: '300км'
+		value: 2500,
+		label: '2.5км'
 	},
 	{
-		value: 400,
-		label: '400км'
+		value: 5000,
+		label: '5км'
 	},
 	{
-		value: 500,
-		label: '500км'
+		value: 7500,
+		label: '7.5км'
+	},
+	{
+		value: 10000,
+		label: '10км'
 	}
 ]
 
 function valuetext(value: number) {
-	return `${value}км`
+	return `${value}м`
 }
 
 export default function MetroSlider({ value, setValue }) {
@@ -55,10 +55,10 @@ export default function MetroSlider({ value, setValue }) {
 				size='small'
 				value={value}
 				onChange={handleChange}
-				min={1}
-				max={500}
+				min={100}
+				max={10000}
 			/>
-			<p className='mt-2 text-center'>до {value} км.</p>
+			<p className='mt-2 text-center'>до {value} м</p>
 		</div>
 	)
 }
