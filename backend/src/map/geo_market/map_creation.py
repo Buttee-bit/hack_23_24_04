@@ -1,10 +1,11 @@
+from operator import not_
 import folium
 from folium.plugins import MarkerCluster
 from folium import FeatureGroup
 from folium import plugins
 from shared.models import Reality, PoiData, MetroStation, Tourist_attractions, Distance_metro, Distance_attraction
 from .db import get_sync_session
-from sqlalchemy import and_,delete, desc, func, insert, select, update
+from sqlalchemy import and_, any_,delete, desc, func, insert, or_, select, update
 
 import geopandas as gpd
 
@@ -233,7 +234,7 @@ class MapCreation:
                 
         print(f'После радиусов {len(result)}')
         return result
-        
+
     def build_map(
         self,
         price_min: int = 100,
@@ -247,14 +248,14 @@ class MapCreation:
         tourist_radius: int = 500
         ):
         
-        print(price_min)
-        print(price_max)
-        print(square_min)
-        print(square_max)
-        print(floor_min)
-        print(floor_max)
-        print(segment_type_list)
-        print(metro_radius)
+        # print(price_min)
+        # print(price_max)
+        # print(square_min)
+        # print(square_max)
+        # print(floor_min)
+        # print(floor_max)
+        # print(segment_type_list)
+        # print(metro_radius)
         
         self.add_metro(metro_radius)
         self.add_tourist(tourist_radius)
@@ -272,8 +273,10 @@ class MapCreation:
         )
         
         for el in data:
-            
-            print(el.address)
+            filter_data = self.filter_favorit()
+            for i in filter_data:
+                print(i.rubrics)
+            # print(el.address)
         
             folium.Marker(
                 location=[el.point_y, el.point_x],
@@ -294,7 +297,23 @@ class MapCreation:
 
         print(f"Расстояние между точками: {distance} метров")
         return iframe
-                
+
+
+
+    def filter_favorit(self, love=['Пекарни'], hate=['Рестораны'], radius=1):
+        love_filter = or_(PoiData.rubrics.contains([rubric]) for rubric in love)
+        hate_filter = or_(~PoiData.rubrics.contains([rubric]) for rubric in hate)
+        
+        combined_filter = and_(love_filter, hate_filter)
+        
+        result = self.session.query(PoiData).filter(combined_filter).all()
+        
+        return result
+
+
+        
+
+
 # while True:
 #     map = MapCreation()
 #     map.build_map()
