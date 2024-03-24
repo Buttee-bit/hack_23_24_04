@@ -1,17 +1,20 @@
 import { priceMarks } from '@/consts/rangeValues'
 import { Slider } from '@mui/material'
-import React from 'react'
+import { useState } from 'react'
 
-export default function PriceSlider({value,setValue}) {
+export default function PriceSlider({ value, setValue }) {
+	const [localValue, setLocalValue] = useState([1, 50])
 
-	const handleChange = (event, newValue) => {
-		setValue(newValue)
+	const handleChange = (event: any, newValue: any) => {
+		// console.log(newValue)
+		setLocalValue(newValue)
+		setValue(scaleValues(newValue))
 	}
 
-	const scaleValues = valueArray => {
+	const scaleValues = (valueArray: any) => {
 		return [scale(valueArray[0]), scale(valueArray[1])]
 	}
-	const scale = value => {
+	const scale = (value: any) => {
 		if (value === undefined) {
 			return undefined
 		}
@@ -26,7 +29,9 @@ export default function PriceSlider({value,setValue}) {
 		return remainder * increment + previousMark.scaledValue
 	}
 
-	// console.log(scaleValues(value))
+	// console.log(scaleValues(localValue))
+
+	// console.log(value, 'value rn')
 
 	return (
 		<div className='px-4'>
@@ -34,7 +39,7 @@ export default function PriceSlider({value,setValue}) {
 				<p className='font-medium'>Стоимость</p>
 			</div>
 			<Slider
-				value={value}
+				value={localValue}
 				min={0}
 				step={10}
 				max={400}
@@ -49,10 +54,10 @@ export default function PriceSlider({value,setValue}) {
 			/>
 			<div className='flex items-center gap-2 justify-center mt-2'>
 				<p>
-					от {scaleValues(value)[0]} {'\u20BD'}
+					от {scaleValues(localValue)[0]} {'\u20BD'}
 				</p>
 				<p>
-					до {scaleValues(value)[1]} {'\u20BD'}
+					до {scaleValues(localValue)[1]} {'\u20BD'}
 				</p>
 			</div>
 		</div>

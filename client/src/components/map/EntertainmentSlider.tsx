@@ -1,5 +1,5 @@
 import Slider from '@mui/material/Slider'
-import { FC } from 'react'
+import { FC, useState } from 'react'
 
 const marks = [
 	{
@@ -50,7 +50,7 @@ const EntertainmentSlider: FC<Props> = ({ value, setValue }) => {
 				</p>
 			</div>
 			<Slider
-				aria-label='Always visible'
+				// aria-label='Always visible'
 				defaultValue={80}
 				getAriaValueText={valuetext}
 				step={5}
