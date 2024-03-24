@@ -6,24 +6,24 @@ const marks = [
 		label: '100м'
 	},
 	{
-		value: 200,
-		label: ''
-	},
-	{
 		value: 250,
-		label: '250м'
+		label: ''
 	},
 	{
 		value: 500,
 		label: '500м'
 	},
 	{
-		value: 750,
-		label: '750м'
+		value: 1000,
+		label: '1км.'
 	},
 	{
-		value: 1000,
-		label: '1км'
+		value: 1500,
+		label: '1.5км'
+	},
+	{
+		value: 2000,
+		label: '2км'
 	}
 ]
 
@@ -54,7 +54,7 @@ export default function MetroSlider({ value, setValue }) {
 				value={value}
 				onChange={handleChange}
 				min={100}
-				max={1000}
+				max={2000}
 			/>
 			<p className='mt-2 text-center'>до {value} м</p>
 		</div>
