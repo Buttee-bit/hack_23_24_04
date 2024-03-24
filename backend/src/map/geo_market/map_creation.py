@@ -43,7 +43,7 @@ class MapCreation:
     """
     def __init__(
         self,
-        location: tuple = (59.94, 30.22),
+        location: tuple = (59.944, 30.327),
         tiles: str = 'openstreetmap',
         zoom_start: int = 13,
         min_zoom: int = 1,
@@ -94,7 +94,7 @@ class MapCreation:
         overlay = gpd.GeoSeries(geometry).to_json()
         folium.GeoJson(overlay, name = 'Граница').add_to(self.map)
 
-        self.marker_cluster = MarkerCluster(name='Конкуренты', show=False).add_to(self.map)
+        self.marker_cluster = MarkerCluster(name='Соседи', show=False).add_to(self.map)
         self.metro_points = FeatureGroup(name='Метро', show=False).add_to(self.map)
         self.tourist_points = FeatureGroup(name='Достопримечательности', show=False).add_to(self.map)
         self.marker_points = FeatureGroup(name='Точки интереса').add_to(self.map)

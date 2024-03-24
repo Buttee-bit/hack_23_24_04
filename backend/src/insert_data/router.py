@@ -140,15 +140,12 @@ async def distance_metro(session: AsyncSession = Depends(get_async_session)):
         
     return 200
 
-
-
 @router.post('/distance_attraction')
 async def distance_attraction(session: AsyncSession = Depends(get_async_session)):
     stmt_poi = select(Reality)
     data_poi = await session.execute(stmt_poi)
     data_poi = data_poi.scalars().all()
 
-    
     stmt_attractions = select(Tourist_attractions)
     data_attractions = await session.execute(stmt_attractions)
     data_attractions = data_attractions.scalars().all()
@@ -164,8 +161,6 @@ async def distance_attraction(session: AsyncSession = Depends(get_async_session)
             if distance_poi_metro < min_distance:
                 id_attractions = attractions.id
                 min_distance = distance_poi_metro
-
-
 
         try:
             distance_instance = Distance_attraction(

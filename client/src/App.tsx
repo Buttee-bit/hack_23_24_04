@@ -19,7 +19,7 @@ export default function App() {
 				<div className='text-3xl md:text-7xl font-bold dark:text-white text-center'>
 					NaturaLP
 				</div>
-				<div className='font-extralight text-base md:text-4xl dark:text-neutral-200 py-4'>
+				<div className='w-3/4 text-center mx-autoß font-extralight text-base md:text-4xl dark:text-neutral-200 py-4'>
 					Сервис поиска{' '}
 					<span className='font-semibold'> подходящего </span>
 					помещения для ведения{' '}
@@ -41,7 +41,7 @@ export default function App() {
 					</div>
 					<div className='w-1/3 border h-full p-6 rounded-lg shadow-xl shadow-cyan-300 bg-slate-200'>
 						<p className='text-lg font-medium mb-4'>
-							Что мы сделали
+							Наше решение
 						</p>
 						<div>
 							<p>

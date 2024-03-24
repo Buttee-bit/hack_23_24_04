@@ -8,7 +8,6 @@ app = FastAPI(
     title="HACK API"
 )
 
-
 app.add_middleware(SessionMiddleware, secret_key="secret-string")
 
 origins = [
