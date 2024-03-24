@@ -11,6 +11,7 @@ import { toast } from 'sonner'
 import { Button as ShadButton } from '@/components/ui/button'
 import React, { FC } from 'react'
 import clsx from 'clsx'
+import { Input } from '../ui/input'
 
 const Transition = React.forwardRef(function Transition(
 	props: TransitionProps & {
@@ -35,6 +36,7 @@ const GoodCategories: FC<Props> = ({
 	altCategories
 }) => {
 	const [open, setOpen] = React.useState(false)
+	const [text, setText] = React.useState('')
 
 	const handleCategory = (text: string) => {
 		const inAltArray = altCategories.includes(text)
@@ -59,6 +61,14 @@ const GoodCategories: FC<Props> = ({
 	const handleClose = () => {
 		setOpen(false)
 	}
+
+	const handleChange = (event: any) => {
+		setText(event.target.value)
+	}
+
+	const filteredCategories = data.filter((category: any) =>
+		category.toLowerCase().includes(text.toLowerCase())
+	)
 
 	return (
 		<div className='mt-4'>
@@ -106,6 +116,15 @@ const GoodCategories: FC<Props> = ({
 									</IconButton>
 									<p>Нужные категории</p>
 								</div>
+								<div className='flex items-center gap-2 basis-1/2'>
+									<p>Поиск</p>
+									<Input
+										type='email'
+										placeholder='Категория'
+										className='bg-white text-black w-full rounded-sm'
+										onChange={handleChange}
+									/>
+								</div>
 								<Button
 									autoFocus
 									color='inherit'
@@ -117,7 +136,7 @@ const GoodCategories: FC<Props> = ({
 						</div>
 					</AppBar>
 					<div className='flex flex-wrap gap-4 mt-4 p-4 py-20'>
-						{data.map((item: any, index: any) => {
+						{filteredCategories.map((item: any, index: any) => {
 							const inArray = categories.includes(item)
 
 							return (

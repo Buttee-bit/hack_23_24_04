@@ -39,21 +39,27 @@ const ObjectContent: FC<Props> = ({ data }) => {
 	return (
 		<>
 			<motion.div
-				className='grid grid-cols-1 gap-4 items-center justify-center lg:grid-cols-2 2xl:grid-cols-3 mt-8'
+				className='grid grid-cols-1 gap-4 items-center justify-center lg:grid-cols-2 xl:grid-cols-3 mt-8'
 				variants={container}
 				initial='hidden'
 				animate='visible'
 				// viewport={{ once: true }}
 			>
-				{data?.map((object: IObject) => (
+				{data?.map((object: IObject, index: number) => (
 					<motion.div variants={item}>
-						<Card className='w-[400px] mx-auto'>
+						<Card
+							className={`relative w-[350px] mx-auto ${
+								index >= 0 && index <= 4 ? 'bg-green-100' : ''
+							}`}
+						>
 							<CardHeader>
 								<CardTitle>
-									<span className='bg-green-200 px-2 m-1'>
-										Адрес:
-									</span>
-									{object.address}
+									<p className=''>
+										<span className='bg-green-200 px-2 m-1'>
+											Адрес:
+										</span>
+										{object.address}
+									</p>
 								</CardTitle>
 								<CardDescription>
 									<Button
@@ -64,11 +70,16 @@ const ObjectContent: FC<Props> = ({ data }) => {
 										<a
 											href={object.additional_info}
 											target='_blank'
-											// rel='noopener noreferrer'
+											rel='noopener noreferrer'
 										>
 											Перейти по ссылке
 										</a>
 									</Button>
+									{(index >= 0 && index <= 4) ?? (
+										<p className='absolute top-[45%] right-[-15%] text-red-400 text-lg rotate-90'>
+											Лучший вариант!
+										</p>
+									)}
 								</CardDescription>
 							</CardHeader>
 							<CardContent>
