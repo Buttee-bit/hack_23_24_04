@@ -32,6 +32,7 @@ const MapPage = () => {
 	const { data: initialHTML, isLoading: initialHTMLLoading } =
 		MapApi.useGetCustomViewQuery('')
 	const [content, setContent] = useState('')
+	const [objectContent, setObjectContent] = useState<IObject[]>([])
 	const [buildingCategory, setBuildingCategory] = useState<string[]>([
 		'Офисные',
 		'Производственные',
