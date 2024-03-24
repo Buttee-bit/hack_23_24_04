@@ -275,7 +275,8 @@ class MapCreation:
         )
         
         for el in data:
-            
+            filter_data = self.filter_favorit()
+            print(filter_data)
             print(el.address)
         
             folium.Marker(
@@ -295,7 +296,18 @@ class MapCreation:
 
         print(f"Расстояние между точками: {distance} метров")
         return iframe
-                
+
+
+
+    def filter_favorit(self, love=['Пекарни'], hate=['Рестораны'], radius=1):
+            love_filter = or_(PoiData.rubrics.contains([rubric]) for rubric in love)
+            hate_filter = or_(~PoiData.rubrics.contains([rubric]) for rubric in hate)
+            
+            combined_filter = and_(love_filter, hate_filter)
+            
+            result = self.session.query(PoiData).filter(combined_filter).all()
+            
+            return result
 # while True:
 #     map = MapCreation()
 #     map.build_map()
