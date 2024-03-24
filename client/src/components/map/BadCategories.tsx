@@ -60,14 +60,14 @@ const BadCategories: FC<Props> = ({
 	}
 
 	return (
-		<>
+		<div className='mt-4'>
 			<React.Fragment>
 				<ShadButton
 					variant='outline'
 					className='block mx-auto mt-4'
 					onClick={handleClickOpen}
 				>
-					Убрать ненужные категории
+					Нежелаемые категории рядом
 				</ShadButton>
 				<Dialog
 					fullScreen
@@ -126,7 +126,7 @@ const BadCategories: FC<Props> = ({
 					</div>
 				</Dialog>
 			</React.Fragment>
-		</>
+		</div>
 	)
 }
 

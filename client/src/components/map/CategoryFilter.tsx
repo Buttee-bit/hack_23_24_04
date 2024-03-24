@@ -2,20 +2,26 @@ import GoodCategories from './GoodCategories'
 import BadCategories from './BadCategories'
 import { categories as data } from '@/consts/categories'
 import { FC } from 'react'
+import CategoriesSlider from './CategoriesSlider'
 
 interface Props {
 	goodCategories: any
 	setGoodCategories: any
 	badCategories: any
 	setBadCategories: any
+	categoriesSlider: any
+	setCategoriesSlider: any
 }
 
 const CategoryFilter: FC<Props> = ({
 	goodCategories,
 	setGoodCategories,
 	badCategories,
-	setBadCategories
+	setBadCategories,
+	categoriesSlider,
+	setCategoriesSlider
 }) => {
+
 	return (
 		<>
 			<GoodCategories
@@ -29,6 +35,10 @@ const CategoryFilter: FC<Props> = ({
 				setCategories={setBadCategories}
 				altCategories={goodCategories}
 				data={data}
+			/>
+			<CategoriesSlider
+				value={categoriesSlider}
+				setValue={setCategoriesSlider}
 			/>
 		</>
 	)

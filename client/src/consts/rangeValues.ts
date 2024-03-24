@@ -94,11 +94,59 @@ export const sizeSmallMarks = [
 	}
 ]
 
-export const priceMarks = [
+export const priceBigMarks = [
+	{
+		value: 0,
+		scaledValue: 1000000,
+		label: '1 млн'
+	},
+	{
+		value: 25,
+		scaledValue: 2000000,
+		label: ''
+	},
+	{
+		value: 50,
+		scaledValue: 3000000,
+		label: '3 млн'
+	},
+	{
+		value: 75,
+		scaledValue: 4000000,
+		label: ''
+	},
+	{
+		value: 100,
+		scaledValue: 5000000,
+		label: '5 млн'
+	},
+	{
+		value: 125,
+		scaledValue: 6000000,
+		label: ''
+	},
+	{
+		value: 150,
+		scaledValue: 7000000,
+		label: '7 млн'
+	},
+	{
+		value: 175,
+		scaledValue: 7500000,
+		label: ''
+	},
+	{
+		value: 200,
+		scaledValue: 10000000,
+		label: '10 млн'
+	}
+]
+
+export const priceSmallMarks = [
 	{
 		value: 0,
 		scaledValue: 100,
-		label: '100'
+		label: '100 ед.'
 	},
 	{
 		value: 25,
@@ -108,17 +156,17 @@ export const priceMarks = [
 	{
 		value: 50,
 		scaledValue: 10000,
-		label: ''
+		label: '10 тыс.'
 	},
 	{
 		value: 75,
 		scaledValue: 25000,
-		label: '25 тыс.'
+		label: ''
 	},
 	{
 		value: 100,
 		scaledValue: 50000,
-		label: ''
+		label: '50 тыс.'
 	},
 	{
 		value: 125,
@@ -128,62 +176,17 @@ export const priceMarks = [
 	{
 		value: 150,
 		scaledValue: 250000,
-		label: ''
+		label: '250 тыс.'
 	},
 	{
 		value: 175,
 		scaledValue: 500000,
-		label: '500 тыс.'
+		label: ''
 	},
 	{
 		value: 200,
-		scaledValue: 10000000,
-		label: ''
-	},
-	{
-		value: 225,
-		scaledValue: 15000000,
-		label: ''
-	},
-	{
-		value: 250,
-		scaledValue: 20000000,
-		label: '2 млн'
-	},
-	{
-		value: 275,
-		scaledValue: 30000000,
-		label: ''
-	},
-	{
-		value: 300,
-		scaledValue: 40000000,
-		label: ''
-	},
-	{
-		value: 325,
-		scaledValue: 50000000,
-		label: '5 млн'
-	},
-	{
-		value: 350,
-		scaledValue: 600000000,
-		label: ''
-	},
-	{
-		value: 375,
-		scaledValue: 70000000,
-		label: ''
-	},
-	{
-		value: 400,
-		scaledValue: 100000000,
-		label: ''
-	},
-	{
-		value: 400,
-		scaledValue: 10000000,
-		label: '10 млн'
+		scaledValue: 1000000,
+		label: '1 млн'
 	}
 ]
 

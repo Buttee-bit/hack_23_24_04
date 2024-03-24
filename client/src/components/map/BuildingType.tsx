@@ -48,7 +48,7 @@ const BuildingType: FC<Props> = ({ category, setCategory }) => {
 	}
 
 	return (
-		<div>
+		<div className='mt-4'>
 			<FormControl fullWidth variant='filled'>
 				<p className='font-medium mb-2 ml-4'>Тип помещения</p>
 				<Select

@@ -60,14 +60,14 @@ const GoodCategories: FC<Props> = ({
 	}
 
 	return (
-		<>
+		<div className='mt-4'>
 			<React.Fragment>
 				<ShadButton
 					variant='outline'
 					className='block mx-auto'
 					onClick={handleClickOpen}
 				>
-					Выбрать нужные категории
+					Желаемые категории рядом
 				</ShadButton>
 				<Dialog
 					fullScreen
@@ -126,7 +126,7 @@ const GoodCategories: FC<Props> = ({
 					</div>
 				</Dialog>
 			</React.Fragment>
-		</>
+		</div>
 	)
 }
 

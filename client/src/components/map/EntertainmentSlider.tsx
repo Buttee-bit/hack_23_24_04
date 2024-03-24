@@ -43,7 +43,7 @@ const EntertainmentSlider: FC<Props> = ({ value, setValue }) => {
 	}
 
 	return (
-		<div className='px-4'>
+		<div className='px-4 mt-4'>
 			<div className='flex items-center justify-between gap-4'>
 				<p className='font-medium'>
 					Удаленность от достопримечательностей

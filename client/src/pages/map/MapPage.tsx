@@ -13,18 +13,18 @@ import PriceSlider from '@/components/map/PriceSlider'
 import SizeSlider from '@/components/map/SizeSlider'
 
 interface IObject {
-	point_x: number,
-	point_y: number,
-	main_type: string,
-	segment_type: string,
-	total_arena: number,
-	floor: number,
-	additional_info: string,
-	address: string,
-	id: number,
-	entity_type: string,
-	lease_price: number,
-	source_info: string,
+	point_x: number
+	point_y: number
+	main_type: string
+	segment_type: string
+	total_arena: number
+	floor: number
+	additional_info: string
+	address: string
+	id: number
+	entity_type: string
+	lease_price: number
+	source_info: string
 	update_date: string
 }
 
@@ -33,7 +33,12 @@ const MapPage = () => {
 		MapApi.useGetCustomViewQuery('')
 	const [content, setContent] = useState('')
 	const [objectContent, setObjectContent] = useState<IObject[]>([])
-	const [buildingCategory, setBuildingCategory] = useState<string[]>(['Офисные', 'Производственные', 'Торговые', 'Иные'])
+	const [buildingCategory, setBuildingCategory] = useState<string[]>([
+		'Офисные',
+		'Производственные',
+		'Торговые',
+		'Иные'
+	])
 	const [floorValue, setFloorValue] = useState([1, 3])
 	const [metroValue, setMetroValue] = useState(100)
 	const [entertainmentValue, setEntertainmentValue] = useState(100)
@@ -41,6 +46,7 @@ const MapPage = () => {
 	const [sizeValue, setSizeValue] = useState([1, 10])
 	const [goodCategories, setGoodCategories] = useState([])
 	const [badCategories, setBadCategories] = useState([])
+	const [categoriesSlider, setCategoriesSlider] = useState(100)
 
 	const [postData, { data: postDataResponse }] =
 		MapApi.usePostCustomViewMutation()
@@ -73,7 +79,10 @@ const MapPage = () => {
 			floor_max: floorValue[1],
 			segment_type_list: buildingCategory,
 			tourist_radius: entertainmentValue,
-			metro_radius: metroValue
+			metro_radius: metroValue,
+			love: goodCategories,
+			hate: badCategories,
+			select_radius: categoriesSlider
 		})
 	}
 
@@ -116,6 +125,8 @@ const MapPage = () => {
 								badCategories={badCategories}
 								setGoodCategories={setGoodCategories}
 								setBadCategories={setBadCategories}
+								categoriesSlider={categoriesSlider}
+								setCategoriesSlider={setCategoriesSlider}
 							/>
 							<Button
 								variant='contained'
@@ -138,29 +149,15 @@ const MapPage = () => {
 				>
 					{/* Контент будет вставлен сюда */}
 				</Paper>
-				<Paper
-
-				>
-					{objectContent.map((object: IObject) => (
+				<Paper>
+					{objectContent?.map((object: IObject) => (
 						<>
-							<div>
-								{object.address}
-							</div>
-							<div>
-								{object.additional_info}
-							</div>
-							<div>
-								{object.entity_type}
-							</div>
-							<div>
-								{object.main_type}
-							</div>
-							<div>
-								{object.lease_price}
-							</div>
-							<div>
-								{object.source_info}
-							</div>
+							<div>{object.address}</div>
+							<div>{object.additional_info}</div>
+							<div>{object.entity_type}</div>
+							<div>{object.main_type}</div>
+							<div>{object.lease_price}</div>
+							<div>{object.source_info}</div>
 						</>
 					))}
 				</Paper>
