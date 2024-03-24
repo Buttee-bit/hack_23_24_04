@@ -27,10 +27,13 @@ const ObjectContent: FC<Props> = ({ data }) => {
 								{object.address}e
 							</CardTitle>
 							<CardDescription>
+                            <span className='bg-green-200 px-2 m-1'>
+									Ссылка:
+								</span>
 								<a
 									href={object.additional_info}
 									target='_blank'
-									rel='noopener noreferrer'
+									// rel='noopener noreferrer'
 								>
 									{object.additional_info}
 								</a>

@@ -198,19 +198,21 @@ const MapPage = () => {
 					<div dangerouslySetInnerHTML={{ __html: content }}></div>
 					{/* Контент будет вставлен сюда */}
 				</Paper>
-				<Paper sx={{ mt: 5 }}>
-					<div className='p-8'>
-						<h3
-							ref={dataRef}
-							className='text-3xl font-bold text-center'
-						>
-							Результаты поиска
-						</h3>
-						{objectContent && (
-							<ObjectContent data={objectContent} />
-						)}
-					</div>
-				</Paper>
+				{(initialHTMLLoading || isPostDataLoading) && (
+					<Paper sx={{ mt: 5 }}>
+						<div className='p-8'>
+							<h3
+								ref={dataRef}
+								className='text-3xl font-bold text-center'
+							>
+								Результаты поиска
+							</h3>
+							{objectContent && (
+								<ObjectContent data={objectContent} />
+							)}
+						</div>
+					</Paper>
+				)}
 			</div>
 			<Toaster />
 		</main>
