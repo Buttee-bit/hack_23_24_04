@@ -39,7 +39,7 @@ const ObjectContent: FC<Props> = ({ data }) => {
 	return (
 		<>
 			<motion.div
-				className='grid grid-cols-3 mt-8'
+				className='grid grid-cols-1 gap-4 items-center justify-center lg:grid-cols-2 2xl:grid-cols-3 mt-8'
 				variants={container}
 				initial='hidden'
 				whileInView='visible'
@@ -47,7 +47,7 @@ const ObjectContent: FC<Props> = ({ data }) => {
 			>
 				{data?.map((object: IObject) => (
 					<motion.div variants={item}>
-						<Card className='w-[500px]'>
+						<Card className='w-[400px] mx-auto'>
 							<CardHeader>
 								<CardTitle>
 									<span className='bg-green-200 px-2 m-1'>
@@ -66,7 +66,7 @@ const ObjectContent: FC<Props> = ({ data }) => {
 											target='_blank'
 											// rel='noopener noreferrer'
 										>
-											{object.additional_info}
+											Перейти по ссылке
 										</a>
 									</Button>
 								</CardDescription>
