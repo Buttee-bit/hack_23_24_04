@@ -29,11 +29,40 @@ export default function App() {
 				{/* <button className='bg-black dark:bg-white rounded-full w-fit text-white dark:text-black px-4 py-2'>
 					Debug now
 				</button> */}
-				
+				<div className='flex items-center gap-6 justify-center mb-4'>
+					<div className='w-1/3 border h-full p-6 rounded-lg shadow-xl shadow-cyan-300 bg-slate-200'>
+						<p className='text-lg font-medium mb-4'>Описание</p>
+						<p>
+							Фактор близости объектов — это один из ключевых
+							элементов геомаркетинга, который позволяет
+							определить, насколько близко находятся объекты
+							бизнеса к потенциальным клиентам.
+						</p>
+					</div>
+					<div className='w-1/3 border h-full p-6 rounded-lg shadow-xl shadow-cyan-300 bg-slate-200'>
+						<p className='text-lg font-medium mb-4'>
+							Что мы сделали
+						</p>
+						<div>
+							<p>
+								Создали алгоритм поиска кратчайшего расстояния
+							</p>
+							<p className='mt-2'>
+								Создали отчёт оценки привлекательности объектов
+								для размещения бизнеса сферы услуг
+							</p>
+							<p className='mt-2'>
+								Создали современное веб-приложение с удобным
+								функционалом
+							</p>
+						</div>
+					</div>
+				</div>
+
 				<Link to='map'>
 					<Button
 						variant='default'
-						className='text-xl p-6 rounded-full'
+						className='text-3xl p-12 rounded-xl'
 						size='lg'
 					>
 						Начать
