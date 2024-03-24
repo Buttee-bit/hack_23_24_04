@@ -17,10 +17,10 @@ const MapPage = () => {
 	const [content, setContent] = useState('')
 	const [buildingCategory, setBuildingCategory] = useState<string[]>([])
 	const [entertainmentValue, setEntertainmentValue] = useState(100)
-	const [floorValue, setFloorValue] = useState([1, 50])
+	const [floorValue, setFloorValue] = useState([1, 3])
 	const [metroValue, setMetroValue] = useState(100)
-	const [priceValue, setPriceValue] = useState([1, 25])
-	const [sizeValue, setSizeValue] = useState([1, 25])
+	const [priceValue, setPriceValue] = useState([296, 10000])
+	const [sizeValue, setSizeValue] = useState([1, 10])
 	const [goodCategories, setGoodCategories] = useState([])
 	const [badCategories, setBadCategories] = useState([])
 
