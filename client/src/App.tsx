@@ -29,8 +29,15 @@ export default function App() {
 				{/* <button className='bg-black dark:bg-white rounded-full w-fit text-white dark:text-black px-4 py-2'>
 					Debug now
 				</button> */}
+				
 				<Link to='map'>
-					<Button variant='default'>Начать</Button>
+					<Button
+						variant='default'
+						className='text-xl p-6 rounded-full'
+						size='lg'
+					>
+						Начать
+					</Button>
 				</Link>
 			</motion.div>
 		</AuroraBackground>
