@@ -50,7 +50,7 @@ export default function SizeSlider({ value, setValue }) {
 		}
 	}
 
-	console.log(value)
+	// console.log(value)
 
 	// console.log(scaleValues(value))
 

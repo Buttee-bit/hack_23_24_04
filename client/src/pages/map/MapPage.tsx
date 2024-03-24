@@ -16,29 +16,30 @@ const MapPage = () => {
 	const { data: initialHTML } = MapApi.useGetCustomViewQuery('')
 	const [content, setContent] = useState('')
 	const [buildingCategory, setBuildingCategory] = useState<string[]>([])
-	const [entertainmentValue, setEntertainmentValue] = useState(100)
 	const [floorValue, setFloorValue] = useState([1, 3])
 	const [metroValue, setMetroValue] = useState(100)
+	const [entertainmentValue, setEntertainmentValue] = useState(100)
 	const [priceValue, setPriceValue] = useState([296, 10000])
 	const [sizeValue, setSizeValue] = useState([1, 10])
 	const [goodCategories, setGoodCategories] = useState([])
 	const [badCategories, setBadCategories] = useState([])
 
-	const [postData, { data: postDataResponse }] = MapApi.usePostCustomViewMutation()
+	const [postData, { data: postDataResponse }] =
+		MapApi.usePostCustomViewMutation()
 
 	useEffect(() => {
 		if (initialHTML) {
-			console.log("setContent(initialHTML)")
-			setContent(initialHTML);
+			console.log('setContent(initialHTML)')
+			setContent(initialHTML)
 		}
-	}, [initialHTML]);
+	}, [initialHTML])
 
 	useEffect(() => {
 		if (postDataResponse) {
-			console.log("setContent(postDataResponse)")
-			setContent(postDataResponse);
+			console.log('setContent(postDataResponse)')
+			setContent(postDataResponse)
 		}
-	}, [postDataResponse]);
+	}, [postDataResponse])
 
 	const handleClick = async () => {
 		await postData({
@@ -49,8 +50,8 @@ const MapPage = () => {
 			floor_min: floorValue[0],
 			floor_max: floorValue[1],
 			segment_type_list: buildingCategory,
-			tourist_radius: 500,
-			metro_radius: 1000
+			tourist_radius: entertainmentValue,
+			metro_radius: metroValue
 		})
 	}
 
@@ -111,7 +112,7 @@ const MapPage = () => {
 				</Paper>
 				<Paper
 					className='h-full w-full bg-red-300'
-					dangerouslySetInnerHTML={{ __html: content  }}
+					dangerouslySetInnerHTML={{ __html: content }}
 				>
 					{/* Контент будет вставлен сюда */}
 				</Paper>
