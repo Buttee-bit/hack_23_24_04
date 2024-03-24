@@ -198,7 +198,7 @@ const MapPage = () => {
 					<div dangerouslySetInnerHTML={{ __html: content }}></div>
 					{/* Контент будет вставлен сюда */}
 				</Paper>
-				{(initialHTMLLoading || isPostDataLoading) && (
+				{isSuccess && (
 					<Paper sx={{ mt: 5 }}>
 						<div className='p-8'>
 							<h3
