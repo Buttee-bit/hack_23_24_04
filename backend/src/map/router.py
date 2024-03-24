@@ -31,7 +31,7 @@ async def custom_map():
     return iframe
 
 
-@router.post('/custom_map')
+@router.post('/custom_map_params')
 async def custom_map_params(custom_map_view: CustomMapView) -> Any:
     iframe = map.build_map(
         custom_map_view.price_min, 
