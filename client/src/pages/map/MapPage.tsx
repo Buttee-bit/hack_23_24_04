@@ -17,7 +17,7 @@ import ArrowCircleDownIcon from '@mui/icons-material/ArrowCircleDown'
 import { motion } from 'framer-motion'
 import ObjectContent from '@/components/map/ObjectContent'
 import CloudDownloadIcon from '@mui/icons-material/CloudDownload'
-import { AuroraBackground } from '@/components/ui/aurora-background'
+// import { AuroraBackground } from '@/components/ui/aurora-background'
 
 export interface IObject {
 	point_x: number
@@ -36,7 +36,8 @@ export interface IObject {
 }
 
 const MapPage = () => {
-	const dataRef = useRef()
+	const dataRef = useRef<HTMLHeadingElement | null>(null);
+
 	const {
 		data: initialHTML,
 		isLoading: initialHTMLLoading,
@@ -97,11 +98,44 @@ const MapPage = () => {
 		})
 	}
 
-	function handleScroll() {
-		if (dataRef) {
-			dataRef.current.scrollIntoView({ behavior: 'smooth' })
+	const handleDownloadExcel = async () => {
+		try {
+
+		  const url = 'http://localhost:8000/custom_view/download_excel'; 
+	  
+		  const response = await fetch(url, {
+			method: 'GET',
+		  });
+	  
+		  if (response.ok) {
+			const contentDisposition = response.headers.get('Content-Disposition');
+			const filename = contentDisposition?.split('filename=')[1] ?? 'data.xlsx';
+	  
+			const blob = await response.blob();
+
+			const downloadUrl = window.URL.createObjectURL(blob);
+			const link = document.createElement('a');
+			link.href = downloadUrl;
+			link.setAttribute('download', filename); 
+			document.body.appendChild(link);
+			link.click();
+			document.body.removeChild(link);
+
+			window.URL.revokeObjectURL(downloadUrl);
+		  } else {
+			console.error('Failed to download file');
+		  }
+		} catch (error) {
+		  console.error('Error during file download:', error);
 		}
-	}
+	  };
+	  
+
+	  function handleScroll() {
+		if (dataRef && dataRef.current) { // Проверка на существование current
+		  dataRef.current.scrollIntoView({ behavior: 'smooth' });
+		}
+	  }
 
 	return (
 		<main className='h-screen p-4 max-w-[1900px] mx-auto'>
@@ -185,7 +219,7 @@ const MapPage = () => {
 								{/* СЕМЫЧ СЮДА СМАРИ */}
 								<ShadButton
 									className='absolute z-50 bottom-16 right-44 text-3lg py-6 rounded-2xl'
-									onClick={() => console.log()}
+									onClick={() => handleDownloadExcel()}
 								>
 									<span className='flex items-center gap-3'>
 										Скачать данные
