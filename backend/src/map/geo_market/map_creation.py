@@ -244,7 +244,9 @@ class MapCreation:
         floor_max: float = 10.0,
         segment_type_list: list[str] = ['Офисные', 'Производственные', 'Торговые', 'Иные'],
         metro_radius: int = 1000,
-        tourist_radius: int = 500
+        tourist_radius: int = 500,
+        love: list[str] = [],
+        hate: list[str] = []
         ):
         
         print(price_min)
@@ -255,25 +257,26 @@ class MapCreation:
         print(floor_max)
         print(segment_type_list)
         print(metro_radius)
+        print(tourist_radius)
+        print(love)
+        print(hate)
         
         self.add_metro(metro_radius)
         self.add_tourist(tourist_radius)
         
         data: list[Reality] = self.search_by_params(
-            price_min=price_min,
-            price_max=price_max,
-            square_min=square_min,
-            square_max=square_max,
-            floor_min=floor_min,
-            floor_max=floor_max,
+            price_min=int(price_min),
+            price_max=int(price_max),
+            square_min=int(square_min),
+            square_max=int(square_max),
+            floor_min=int(floor_min),
+            floor_max=int(floor_max),
             segment_type_list=segment_type_list,
             metro_radius=metro_radius,
             tourist_radius=tourist_radius
         )
         
         for el in data:
-            
-            print(el.address)
         
             folium.Marker(
                 location=[el.point_y, el.point_x],
@@ -282,28 +285,7 @@ class MapCreation:
                 icon=folium.Icon(color="red", icon="flash"),
                 ).add_to(self.marker_points)
         
-        # self.map.get_root().width = f"{self.width}px"
-        # self.map.get_root().height = f"{self.height}px"
         iframe = self.map.get_root()._repr_html_()
-
-        point1 = (59.94, 30.22) # Пример координат первой точки
-        point2 = (59.95, 30.23) # Пример координат второй точки
-
-        # Расчет расстояния между двумя точками в метрах
-        distance = geodesic(point1, point2).meters
-
-        print(f"Расстояние между точками: {distance} метров")
-        return iframe
+        
+        return iframe, data
                 
-# while True:
-#     map = MapCreation()
-#     map.build_map()
-#     time.sleep(3000)
-
-# print('start')
-# session = get_sync_session()
-# stmt = select(PoiData)
-# data = session.execute(stmt)
-# DATA = data.scalars().all()
-# print(DATA)
-# session.close() # Не забудьт
