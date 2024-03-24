@@ -16,8 +16,6 @@ from .geo_market.map_creation import MapCreation
 
 from ..models import PoiData
 
-map = MapCreation()
-
 router = APIRouter(
     prefix='/custom_view',
     tags=['custom_view']
@@ -26,14 +24,14 @@ router = APIRouter(
 
 @router.get('/custom_map')
 async def custom_map():
-    iframe = map.build_map()
+    iframe = MapCreation().build_map()
     
     return iframe
 
 
 @router.post('/custom_map')
 async def custom_map_params(custom_map_view: CustomMapView) -> Any:
-    iframe = map.build_map(
+    iframe = MapCreation().build_map(
         custom_map_view.price_min, 
         custom_map_view.price_max, 
         custom_map_view.square_min, 
