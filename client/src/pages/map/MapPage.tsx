@@ -79,7 +79,10 @@ const MapPage = () => {
 			floor_max: floorValue[1],
 			segment_type_list: buildingCategory,
 			tourist_radius: entertainmentValue,
-			metro_radius: metroValue
+			metro_radius: metroValue,
+			love: goodCategories,
+			hate: badCategories,
+			select_radius: categoriesSlider
 		})
 	}
 
@@ -147,7 +150,7 @@ const MapPage = () => {
 					{/* Контент будет вставлен сюда */}
 				</Paper>
 				<Paper>
-					{objectContent.map((object: IObject) => (
+					{objectContent?.map((object: IObject) => (
 						<>
 							<div>{object.address}</div>
 							<div>{object.additional_info}</div>
