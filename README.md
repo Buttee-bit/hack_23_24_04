@@ -1,5 +1,7 @@
 # hack_23_24_04
 CASE 1
+
+
 Инструкция по запуску проекта:
 1. git clone https://github.com/Buttee-bit/hack_23_24_04.git
 2. docker compose --env-file .env.dev --profile deploy up --build -d
