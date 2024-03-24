@@ -245,38 +245,38 @@ class MapCreation:
         floor_max: float = 10.0,
         segment_type_list: list[str] = ['Офисные', 'Производственные', 'Торговые', 'Иные'],
         metro_radius: int = 1000,
-        tourist_radius: int = 500
+        tourist_radius: int = 500,
+        love: list[str] = [],
+        hate: list[str] = []
         ):
         
-        # print(price_min)
-        # print(price_max)
-        # print(square_min)
-        # print(square_max)
-        # print(floor_min)
-        # print(floor_max)
-        # print(segment_type_list)
-        # print(metro_radius)
+        print(price_min)
+        print(price_max)
+        print(square_min)
+        print(square_max)
+        print(floor_min)
+        print(floor_max)
+        print(segment_type_list)
+        print(metro_radius)
         
         self.add_metro(metro_radius)
         self.add_tourist(tourist_radius)
         
         data: list[Reality] = self.search_by_params(
-            price_min=price_min,
-            price_max=price_max,
-            square_min=square_min,
-            square_max=square_max,
-            floor_min=floor_min,
-            floor_max=floor_max,
+            price_min=int(price_min),
+            price_max=int(price_max),
+            square_min=int(square_min),
+            square_max=int(square_max),
+            floor_min=int(floor_min),
+            floor_max=int(floor_max),
             segment_type_list=segment_type_list,
             metro_radius=metro_radius,
             tourist_radius=tourist_radius
         )
         
         for el in data:
-            filter_data = self.filter_favorit()
-            for i in filter_data:
-                print(i.rubrics)
-            # print(el.address)
+            
+            print(el.address)
         
             folium.Marker(
                 location=[el.point_y, el.point_x],
@@ -285,8 +285,6 @@ class MapCreation:
                 icon=folium.Icon(color="red", icon="flash"),
                 ).add_to(self.marker_points)
         
-        # self.map.get_root().width = f"{self.width}px"
-        # self.map.get_root().height = f"{self.height}px"
         iframe = self.map.get_root()._repr_html_()
 
         point1 = (59.94, 30.22) # Пример координат первой точки
@@ -297,23 +295,7 @@ class MapCreation:
 
         print(f"Расстояние между точками: {distance} метров")
         return iframe
-
-
-
-    def filter_favorit(self, love=['Пекарни'], hate=['Рестораны'], radius=1):
-        love_filter = or_(PoiData.rubrics.contains([rubric]) for rubric in love)
-        hate_filter = or_(~PoiData.rubrics.contains([rubric]) for rubric in hate)
-        
-        combined_filter = and_(love_filter, hate_filter)
-        
-        result = self.session.query(PoiData).filter(combined_filter).all()
-        
-        return result
-
-
-        
-
-
+                
 # while True:
 #     map = MapCreation()
 #     map.build_map()
