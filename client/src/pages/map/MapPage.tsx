@@ -16,7 +16,12 @@ const MapPage = () => {
 	const { data: initialHTML, isLoading: initialHTMLLoading } =
 		MapApi.useGetCustomViewQuery('')
 	const [content, setContent] = useState('')
-	const [buildingCategory, setBuildingCategory] = useState<string[]>(['Офисные', 'Производственные', 'Торговые', 'Иные'])
+	const [buildingCategory, setBuildingCategory] = useState<string[]>([
+		'Офисные',
+		'Производственные',
+		'Торговые',
+		'Иные'
+	])
 	const [floorValue, setFloorValue] = useState([1, 3])
 	const [metroValue, setMetroValue] = useState(100)
 	const [entertainmentValue, setEntertainmentValue] = useState(100)
@@ -24,6 +29,7 @@ const MapPage = () => {
 	const [sizeValue, setSizeValue] = useState([1, 10])
 	const [goodCategories, setGoodCategories] = useState([])
 	const [badCategories, setBadCategories] = useState([])
+	const [categoriesSlider, setCategoriesSlider] = useState(100)
 
 	const [postData, { data: postDataResponse }] =
 		MapApi.usePostCustomViewMutation()
@@ -95,6 +101,8 @@ const MapPage = () => {
 								badCategories={badCategories}
 								setGoodCategories={setGoodCategories}
 								setBadCategories={setBadCategories}
+								categoriesSlider={categoriesSlider}
+								setCategoriesSlider={setCategoriesSlider}
 							/>
 							<Button
 								variant='contained'

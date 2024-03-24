@@ -1,6 +1,5 @@
-import * as React from 'react'
-import Box from '@mui/material/Box'
 import Slider from '@mui/material/Slider'
+import { FC, useState } from 'react'
 
 const marks = [
 	{
@@ -33,20 +32,25 @@ function valuetext(value: number) {
 	return `${value}м`
 }
 
-export default function MetroSlider({ value, setValue }) {
-	const handleChange = (event, newValue) => {
+interface Props {
+	value: number
+	setValue: any
+}
+
+const CategoriesSlider: FC<Props> = ({ value, setValue }) => {
+	const handleChange = (event: any, newValue: any) => {
 		setValue(newValue)
 	}
 
-	// console.log(value)
-
 	return (
-		<div className='px-4 mt-4'>
-			<div className='flex items-center justify-between gap-4'>
-				<p className='font-medium'>Удаленность от метро</p>
-			</div>
+		<div className='px-4 mt-2'>
+			{/* <div className='flex items-center justify-between gap-4'>
+				<p className='font-medium'>
+					Удаленность от категорий
+				</p>
+			</div> */}
 			<Slider
-				aria-label='Always visible'
+				// aria-label='Always visible'
 				defaultValue={80}
 				getAriaValueText={valuetext}
 				step={5}
@@ -62,3 +66,5 @@ export default function MetroSlider({ value, setValue }) {
 		</div>
 	)
 }
+
+export default CategoriesSlider
