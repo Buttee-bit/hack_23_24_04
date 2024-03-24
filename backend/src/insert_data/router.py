@@ -181,32 +181,3 @@ async def distance_attraction(session: AsyncSession = Depends(get_async_session)
             await session.rollback()
         
     return 200
-
-@router.get('/get_distance_attraction')
-async def get_data(session: AsyncSession = Depends(get_async_session)):
-    stmt_real = select(Distance_attraction)
-    stmt_real = stmt_real.options(selectinload(Distance_attraction.attraction_name))
-    stmt_real = stmt_real.options(selectinload(Distance_attraction.reality_atraction_data))
-    data_real = await session.execute(stmt_real)
-    data_real = data_real.scalars().all()
-    data = []
-    for i in data_real[0:10]:
-        obj_ = {
-            'id':i.id,
-            'point_x':i.reality_atraction_data.point_x,
-            'point_y':i.reality_atraction_data.point_y,
-            'main_type':i.reality_atraction_data.main_type,
-            'segment_type':i.reality_atraction_data.segment_type,
-            'entity_type':i.reality_atraction_data.entity_type,
-            'total_arena':i.reality_atraction_data.total_arena,
-            'floor':i.reality_atraction_data.floor,
-            'lease_price':i.reality_atraction_data.lease_price,
-            'additional_info':i.reality_atraction_data.additional_info,
-            'source_info':i.reality_atraction_data.source_info,
-            'address':i.reality_atraction_data.address,
-            'update_date':i.reality_atraction_data.update_date,
-            'name_attract':i.attraction_name.name,
-            'distance_attract':i.distance,
-        }
-        data.append(obj_)
-    return data
