@@ -253,13 +253,12 @@ class MapCreation:
             print(el.address)
             for sel in result:
                 if geodesic(el_coords, [sel.lat, sel.lon]).meters <= radius:
-                    coordin_el = self.get_coordinates(el.address)  
-                    coordin_sel = self.get_coordinates('Санкт-Петербург, '+sel.adress_name) 
-                    distance = self.get_distance_osrm(coordin_el, coordin_sel)
-                    print(f'distance_API: {distance}')
-                    print(f'distance geodesic: {geodesic(el_coords, [sel.lat, sel.lon]).meters}')
-                    if distance <= radius:
+                    # coordin_el = self.get_coordinates(el.address)  
+                    # coordin_sel = self.get_coordinates('Санкт-Петербург, '+sel.adress_name) 
+                    # distance = self.get_distance_osrm(coordin_el, coordin_sel)
+                    # if distance <= radius:
                         final_res.append(sel)
+                        continue
             final_data.append(el)
 
         return final_data, final_res
