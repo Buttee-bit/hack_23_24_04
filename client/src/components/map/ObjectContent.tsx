@@ -39,76 +39,113 @@ const ObjectContent: FC<Props> = ({ data }) => {
 	return (
 		<>
 			<motion.div
-				className='grid grid-cols-1 gap-4 items-center justify-center lg:grid-cols-2 xl:grid-cols-3 mt-8'
+				className='grid grid-cols-1 gap-4 items-center justify-center lg:grid-cols-2 2xl:grid-cols-3 mt-8'
 				variants={container}
 				initial='hidden'
 				animate='visible'
 				// viewport={{ once: true }}
 			>
-				{data?.map((object: IObject, index: number) => (
-					<motion.div variants={item}>
-						<Card
-							className={`relative w-[350px] mx-auto ${
-								index >= 0 && index <= 4 ? 'bg-green-100' : ''
-							}`}
-						>
-							<CardHeader>
-								<CardTitle>
-									<p className=''>
-										<span className='bg-green-200 px-2 m-1'>
-											Адрес:
-										</span>
-										{object.address}
-									</p>
-								</CardTitle>
-								<CardDescription>
-									<Button
-										asChild
-										variant='link'
-										className='px-0'
-									>
-										<a
-											href={object.additional_info}
-											target='_blank'
-											rel='noopener noreferrer'
-										>
-											Перейти по ссылке
-										</a>
-									</Button>
-									{(index >= 0 && index <= 4) ?? (
-										<p className='absolute top-[45%] right-[-15%] text-red-400 text-lg rotate-90'>
-											Лучший вариант!
+				{data?.map((object: IObject, index: number) => {
+					const date = object.update_date
+
+					const d = new Date(date)
+					const year = d.getFullYear()
+					const month = d.getMonth() + 1
+					const day = d.getDate()
+
+					return (
+						<motion.div variants={item}>
+							<Card
+								className={`relative w-[450px] mx-auto ${
+									index >= 0 && index <= 4
+										? 'bg-green-100'
+										: ''
+								}`}
+							>
+								<CardHeader>
+									<CardTitle>
+										<p className=''>
+											<span className='bg-green-200 px-2 m-1'>
+												Адрес:
+											</span>
+											{object.address}
 										</p>
-									)}
-								</CardDescription>
-							</CardHeader>
-							<CardContent>
-								<div className='flex gap-1 items-center'>
-									<span className='bg-green-200 px-2 m-1'>
-										Тип объявления:
-									</span>
-									<p>{object.main_type}</p>
-								</div>
-								{/* <p>{object.entity_type}</p> */}
+									</CardTitle>
+									<CardDescription>
+										<Button
+											asChild
+											variant='link'
+											className='px-0'
+										>
+											<a
+												href={object.additional_info}
+												target='_blank'
+												rel='noopener noreferrer'
+											>
+												Перейти по ссылке
+											</a>
+										</Button>
+										{index >= 0 && index <= 4 && (
+											<p className='absolute top-[50%] right-[-13%] text-red-400 font-semibold text-lg rotate-90'>
+												Лучший вариант!
+											</p>
+										)}
+									</CardDescription>
+								</CardHeader>
+								<CardContent>
+									<div className='flex gap-1 items-center'>
+										<span className='bg-green-200 px-2 m-1'>
+											Тип объявления:
+										</span>
+										<p>{object.main_type}</p>
+									</div>
+									{/* <p>{object.entity_type}</p> */}
 
-								<div className='flex gap-1 items-center mt-1'>
-									<span className='bg-green-200 px-2 m-1'>
-										Стоимость:
-									</span>
-									<p>{object.lease_price}</p>
-								</div>
+									<div className='flex gap-1 items-center mt-1'>
+										<span className='bg-green-200 px-2 m-1'>
+											Стоимость:
+										</span>
+										<p>{object.lease_price}</p>
+									</div>
+									<div className='flex gap-1 items-center mt-1'>
+										<span className='bg-green-200 px-2 m-1'>
+											Площадь:
+										</span>
+										<p>{object.total_arena}</p>
+									</div>
+									<div className='flex gap-1 items-center mt-1'>
+										<span className='bg-green-200 px-2 m-1'>
+											Тип помещения:
+										</span>
+										<p>{object.segment_type}</p>
+									</div>
+									<div className='flex gap-1 items-center mt-1'>
+										<span className='bg-green-200 px-2 m-1'>
+											Этаж:
+										</span>
+										<p>{object.floor}</p>
+									</div>
 
-								<div className='flex gap-1 items-center mt-1'>
-									<span className='bg-green-200 px-2 m-1'>
-										Источник:
-									</span>
-									<p>{object.source_info}</p>
-								</div>
-							</CardContent>
-							<CardFooter></CardFooter>
-						</Card>
-					</motion.div>
-				))}
+									<div className='flex gap-1 items-center mt-1'>
+										<span className='bg-green-200 px-2 m-1'>
+											Дата публикации:
+										</span>
+										<p>
+											{day}.{month}.{year}
+										</p>
+									</div>
+									<div className='flex gap-1 items-center mt-1'>
+										<span className='bg-green-200 px-2 m-1'>
+											Источник:
+										</span>
+										<p>{object.source_info}</p>
+									</div>
+								</CardContent>
+								<CardFooter></CardFooter>
+							</Card>
+						</motion.div>
+					)
+				})}
 			</motion.div>
 		</>
 	)
