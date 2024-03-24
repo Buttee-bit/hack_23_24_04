@@ -1,4 +1,6 @@
 from operator import not_
+
+import requests
 import folium
 from folium.plugins import MarkerCluster
 from folium import FeatureGroup
@@ -26,12 +28,14 @@ class MapCreation:
         zoom_start: int = 10,
         min_zoom: int = 1,
         max_zoom: int = 20,
-        cities: list[str] = ['Санкт-Петербург']
+        cities: list[str] = ['Санкт-Петербург'],
+        API_KEY = 'b0f7dee9-c300-4505-bf42-c8c1e128a4aa'
+
         ) -> None:
         
         self.width = width
         self.height = height
-        
+        self.API_KEY = API_KEY
         self.session = get_sync_session()
         
         self.map = folium.Map(
@@ -249,13 +253,40 @@ class MapCreation:
             print(el.address)
             for sel in result:
                 if geodesic(el_coords, [sel.lat, sel.lon]).meters <= radius:
-                    
-                    print(sel.adress_name)
-                    
-                    final_data.append(el)
-                    final_res.append(sel)
+                    coordin_el = self.get_coordinates(el.address)  
+                    coordin_sel = self.get_coordinates('Санкт-Петербург, '+sel.adress_name) 
+                    distance = self.get_distance_osrm(coordin_el, coordin_sel)
+                    print(f'distance_API: {distance}')
+                    print(f'distance geodesic: {geodesic(el_coords, [sel.lat, sel.lon]).meters}')
+                    if distance <= radius:
+                        final_res.append(sel)
+            final_data.append(el)
+
         
         return final_data, final_res
+
+    def get_coordinates(self, address):
+        geocode_url = f"https://geocode-maps.yandex.ru/1.x/?apikey={self.API_KEY}&geocode={address}&format=json"
+        response = requests.get(geocode_url)
+        response_json = response.json()
+        coordinates_str = response_json['response']['GeoObjectCollection']['featureMember'][0]['GeoObject']['Point']['pos']
+        return tuple(map(float, coordinates_str.split()))
+
+
+
+
+    def get_distance_osrm(self, start_coord, end_coord):
+        osrm_route_url = f"http://router.project-osrm.org/route/v1/driving/{start_coord[0]},{start_coord[1]};{end_coord[0]},{end_coord[1]}?overview=false"
+        response = requests.get(osrm_route_url)
+        route_data = response.json()
+        
+        if route_data.get("routes"):
+            distance = route_data["routes"][0]["distance"]  # Расстояние в метрах
+            return distance
+        else:
+            print("Маршрут не найден")
+            return None
+
 
     def build_map(
         self,
