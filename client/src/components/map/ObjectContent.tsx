@@ -43,7 +43,7 @@ const ObjectContent: FC<Props> = ({ data }) => {
 				variants={container}
 				initial='hidden'
 				whileInView='visible'
-				viewport={{ once: true }}
+				// viewport={{ once: true }}
 			>
 				{data?.map((object: IObject) => (
 					<motion.div variants={item}>

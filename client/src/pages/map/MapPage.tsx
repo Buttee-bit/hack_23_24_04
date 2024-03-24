@@ -145,7 +145,7 @@ const MapPage = () => {
 		<main className='h-screen p-4 max-w-[1900px] mx-auto'>
 			<div className='relative h-full'>
 				{/* <Filter /> */}
-				<Paper className='absolute z-10 top-5 left-20 w-1/3 h-[calc(100%-2.5rem)] py-4'>
+				<Paper className='absolute z-10 top-5 left-20 w-1/3 2xl:w-1/4 h-[calc(100%-2.5rem)] py-4'>
 					<ScrollArea className='h-full'>
 						<h2 className='text-center text-lg font-semibold'>
 							Фильтры

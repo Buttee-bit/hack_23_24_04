@@ -87,34 +87,36 @@ const BadCategories: FC<Props> = ({
 					TransitionComponent={Transition}
 				>
 					<AppBar sx={{ position: 'relative' }}>
-						<Toolbar
-							sx={{
-								display: 'flex',
-								justifyContent: 'space-between',
-								alignItems: 'center'
-							}}
-						>
-							<div className='flex items-center gap-2'>
-								<IconButton
-									edge='start'
+						<div className='fixed bg-inherit w-full'>
+							<Toolbar
+								sx={{
+									display: 'flex',
+									justifyContent: 'space-between',
+									alignItems: 'center'
+								}}
+							>
+								<div className='flex items-center gap-2'>
+									<IconButton
+										edge='start'
+										color='inherit'
+										onClick={handleClose}
+										aria-label='close'
+									>
+										<CloseIcon />
+									</IconButton>
+									<p>Нужные категории</p>
+								</div>
+								<Button
+									autoFocus
 									color='inherit'
 									onClick={handleClose}
-									aria-label='close'
 								>
-									<CloseIcon />
-								</IconButton>
-								<p>Нужные категории</p>
-							</div>
-							<Button
-								autoFocus
-								color='inherit'
-								onClick={handleClose}
-							>
-								<span>Сохранить</span>
-							</Button>
-						</Toolbar>
+									<span>Сохранить</span>
+								</Button>
+							</Toolbar>
+						</div>
 					</AppBar>
-					<div className='flex flex-wrap gap-4 mt-4 p-4'>
+					<div className='flex flex-wrap gap-4 mt-4 p-4 py-20'>
 						{data.map((item: any, index: any) => {
 							const inArray = categories.includes(item)
 
