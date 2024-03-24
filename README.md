@@ -9,4 +9,6 @@ CASE 1
 4. Последовательно выполняем запросы : POST http://localhost:8000//insert_data/data_poi, POST http://localhost:8000//insert_data/data_reality, POST http://localhost:8000//insert_data/data_metro, POST http://localhost:8000//insert_data/data_tourist_attraction, POST http://localhost:8000//insert_data/distance_attraction, POST http://localhost:8000//insert_data/distance_metro
 
 5. Переходим по адресу: http://localhost:3000/
+
+   
 Пользуемся решением !
