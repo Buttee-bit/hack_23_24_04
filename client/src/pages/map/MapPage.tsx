@@ -14,6 +14,7 @@ import SizeSlider from '@/components/map/SizeSlider'
 import Loader from '@/components/ui/loader'
 import { Button as ShadButton } from '@/components/ui/button'
 import ArrowCircleDownIcon from '@mui/icons-material/ArrowCircleDown'
+import { motion } from 'framer-motion'
 
 interface IObject {
 	point_x: number
@@ -33,8 +34,11 @@ interface IObject {
 
 const MapPage = () => {
 	const dataRef = useRef()
-	const { data: initialHTML, isLoading: initialHTMLLoading } =
-		MapApi.useGetCustomViewQuery('')
+	const {
+		data: initialHTML,
+		isLoading: initialHTMLLoading,
+		isSuccess
+	} = MapApi.useGetCustomViewQuery('')
 	const [content, setContent] = useState('')
 	const [objectContent, setObjectContent] = useState<IObject[]>([])
 	const [buildingCategory, setBuildingCategory] = useState<string[]>([
@@ -100,7 +104,7 @@ const MapPage = () => {
 		<main className='h-screen p-4 max-w-[1900px] mx-auto'>
 			<div className='relative h-full'>
 				{/* <Filter /> */}
-				<Paper className='absolute z-10 top-5 left-20 w-1/5 h-[calc(100%-2.5rem)] py-4'>
+				<Paper className='absolute z-10 top-5 left-20 w-1/4 h-[calc(100%-2.5rem)] py-4'>
 					<ScrollArea className='h-full'>
 						<h2 className='text-center text-lg font-semibold'>
 							Фильтры
@@ -157,16 +161,25 @@ const MapPage = () => {
 
 				<Paper className='h-full w-full bg-red-300 overflow-hidden relative'>
 					{initialHTMLLoading && <Loader />}
-					<ShadButton
-						className='absolute z-50 bottom-14 p-10 left-[50%] text-[60px] rounded-full'
-						size='icon'
-					>
-						<ArrowCircleDownIcon fontSize='inherit' />
-					</ShadButton>
+					{isSuccess && (
+						<motion.div
+							initial={{ opacity: 0 }}
+							animate={{ opacity: 1 }}
+						>
+							<ShadButton
+								className='absolute z-50 bottom-14 p-10 left-[50%] text-[60px] rounded-full'
+								size='icon'
+								onClick={handleScroll}
+							>
+								<ArrowCircleDownIcon fontSize='inherit' />
+							</ShadButton>
+						</motion.div>
+					)}
 					<div dangerouslySetInnerHTML={{ __html: content }}></div>
 					{/* Контент будет вставлен сюда */}
 				</Paper>
-				<Paper sx={{ mt: 5 }} ref={dataRef}>
+				<Paper sx={{ mt: 5 }}>
+					<h3 ref={dataRef}>Данные</h3>
 					{objectContent?.map((object: IObject) => (
 						<>
 							<div>{object.address}</div>
