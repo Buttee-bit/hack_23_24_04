@@ -13,7 +13,7 @@ import PriceSlider from '@/components/map/PriceSlider'
 import SizeSlider from '@/components/map/SizeSlider'
 
 const MapPage = () => {
-	const { data: initialHTML } = MapApi.useGetCustomViewQuery('')
+	const { data: initialHTML, isLoading: initialHTMLLoading } = MapApi.useGetCustomViewQuery('')
 	const [content, setContent] = useState('')
 	const [buildingCategory, setBuildingCategory] = useState<string[]>([])
 	const [entertainmentValue, setEntertainmentValue] = useState(100)
@@ -24,7 +24,7 @@ const MapPage = () => {
 	const [goodCategories, setGoodCategories] = useState([])
 	const [badCategories, setBadCategories] = useState([])
 
-	const [postData, { data: postDataResponse }] = MapApi.usePostCustomViewMutation()
+	const [postData, { data: postDataResponse, isLoading: postDataResponseLoading }] = MapApi.usePostCustomViewMutation()
 
 	useEffect(() => {
 		if (initialHTML) {
