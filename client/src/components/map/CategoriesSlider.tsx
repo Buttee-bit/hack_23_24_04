@@ -1,5 +1,5 @@
 import Slider from '@mui/material/Slider'
-import { FC, useState } from 'react'
+import { FC } from 'react'
 
 const marks = [
 	{

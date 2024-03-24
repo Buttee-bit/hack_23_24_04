@@ -1,46 +1,73 @@
-from operator import not_
-
 import requests
+from sqlalchemy import and_, or_, select, asc
+
 import folium
 from folium.plugins import MarkerCluster
 from folium import FeatureGroup
 from folium import plugins
-from shared.models import Reality, PoiData, MetroStation, Tourist_attractions, Distance_metro, Distance_attraction
-from .db import get_sync_session
-from sqlalchemy import and_, any_,delete, desc, func, insert, or_, select, update, asc
 
 import geopandas as gpd
-
-import geopandas as gpd
-import pandas as pd
-import numpy as np
 import osmnx as ox
 from geopy.distance import geodesic
 
+from shared.models import Reality, PoiData, MetroStation, Tourist_attractions, Distance_metro, Distance_attraction
+from .db import get_sync_session
+
 
 class MapCreation:
+    """
+    Класс для создания и настройки карты с использованием библиотеки Folium.
+
+    Атрибуты:
+    - API_KEY (str): Ключ API для использования в запросах к внешним сервисам.
+    - session (Session): SQLAlchemy сессия для работы с базой данных.
+    - map (folium.Map): Объект карты Folium.
+    - marker_cluster (folium.plugins.MarkerCluster): Группа маркеров для конкурентов.
+    - metro_points (folium.FeatureGroup): Группа точек метро.
+    - tourist_points (folium.FeatureGroup): Группа точек достопримечательностей.
+    - marker_points (folium.FeatureGroup): Группа точек интереса.
+
+    Методы:
+    - __init__(self, location: tuple, tiles: str, zoom_start: int, min_zoom: int, max_zoom: int, cities: list[str], API_KEY: str) -> None: Инициализация класса с настройками карты.
+    - add_metro(self, metro_radius: int) -> None: Добавление точек метро на карту.
+    - add_tourist(self, tourist_radius: int) -> None: Добавление точек достопримечательностей на карту.
+    - get_realty_popup(row: Reality) -> str: Получение HTML-попапа для объекта недвижимости.
+    - get_poi_popup(poi: PoiData) -> str: Получение HTML-попапа для точки интереса.
+    - validate_by_metro(self, id, metro_radius) -> bool: Проверка, находится ли объект в пределах радиуса метро.
+    - validate_by_tourist(self, id, tourist_radius) -> bool: Проверка, находится ли объект в пределах радиуса достопримечательности.
+    - search_by_params(self, price_min: int, price_max: int, square_min: int, square_max: int, floor_min: float, floor_max: float, segment_type_list: list[str], metro_radius: int, tourist_radius: int) -> list[Reality]: Поиск объектов недвижимости по заданным параметрам.
+    - filter_favorit(self, data: list[Reality], love=[], hate=[], radius: int = 1000) -> tuple[list[Reality], list[PoiData]]: Фильтрация объектов недвижимости по предпочтениям пользователя.
+    - get_coordinates(self, address) -> tuple: Получение координат по адресу.
+    - get_distance_osrm(self, start_coord, end_coord) -> float: Получение расстояния между двумя координатами с использованием OSRM.
+    - build_map(self, price_min: int, price_max: int, square_min: int, square_max: int, floor_min: float, floor_max: float, segment_type_list: list[str], metro_radius: int, tourist_radius: int, love: list[str], hate: list[str], select_radius: int) -> tuple[str, list[Reality]]: Сборка карты с учетом заданных параметров и фильтров.
+    """
     def __init__(
         self,
-        width: int = 1400,
-        height: int = 900,
         location: tuple = (59.94, 30.22),
         tiles: str = 'openstreetmap',
         zoom_start: int = 10,
         min_zoom: int = 1,
         max_zoom: int = 20,
         cities: list[str] = ['Санкт-Петербург'],
-        API_KEY = 'b0f7dee9-c300-4505-bf42-c8c1e128a4aa'
-
+        API_KEY: str = 'b0f7dee9-c300-4505-bf42-c8c1e128a4aa'
         ) -> None:
+        """
+        Инициализация класса с настройками карты.
+
+        Параметры:
+        - location (tuple): Координаты центра карты.
+        - tiles (str): Тип тайлов для карты.
+        - zoom_start (int): Начальный уровень зума.
+        - min_zoom (int): Минимальный уровень зума.
+        - max_zoom (int): Максимальный уровень зума.
+        - cities (list[str]): Список городов для отображения на карте.
+        - API_KEY (str): Ключ API для использования в запросах к внешним сервисам.
+        """
         
-        self.width = width
-        self.height = height
         self.API_KEY = API_KEY
         self.session = get_sync_session()
         
         self.map = folium.Map(
-            # width=width,
-            # height=height,
             location=location,
             tiles=tiles,
             zoom_start=zoom_start,
@@ -82,11 +109,6 @@ class MapCreation:
                                 primary_area_unit='sqmeters',
                                 secondary_area_unit='acres').add_to(self.map)
 
-        # folium.TileLayer('Stamen Terrain').add_to(self.map)
-        # folium.TileLayer('Stamen Watercolor').add_to(self.map)
-        # folium.TileLayer('cartodbpositron').add_to(self.map)
-        # folium.TileLayer('cartodbdark_matter').add_to(self.map)
-
         folium.TileLayer(
             tiles='https://tiles.openrailwaymap.org/standard/{z}/{x}/{y}.png',
             attr='OpenRailwayMap',
@@ -108,18 +130,17 @@ class MapCreation:
         folium.LayerControl().add_to(self.map)
         
     def add_metro(self, metro_radius: int):
+        """
+        Добавление точек метро на карту.
+
+        Параметры:
+        - metro_radius (int): Радиус в метрах для определения близости к метро.
+        """
         stmt = select(MetroStation)
         data = self.session.execute(stmt)
         data = data.scalars().all()
         
-        for station in data:
-            # folium.Marker(
-            # location=[station.lat, station.lon],
-            # popup=station.name_station,
-            # tooltip=station.name_station,
-            # icon=folium.Icon(color="blue", icon="globe"),
-            # ).add_to(self.metro_points)
-            
+        for station in data:   
             folium.Circle(
                 location=[station.lat, station.lon],
                 radius=metro_radius,
@@ -134,19 +155,18 @@ class MapCreation:
             ).add_to(self.metro_points)
             
     def add_tourist(self, tourist_radius: int):
+        """
+        Добавление точек достопримечательностей на карту.
+
+        Параметры:
+        - tourist_radius (int): Радиус в метрах для определения близости к достопримечательностям.
+        """
         stmt = select(Tourist_attractions)
         data = self.session.execute(stmt)
         data = data.scalars().all()
         
         for place in data:
             if place.lat and place.lon:
-                # folium.Marker(
-                # location=[place.lat, place.lon],
-                # popup=place.name,
-                # tooltip=place.name,
-                # icon=folium.Icon(color="orange", icon="camera"),
-                # ).add_to(self.tourist_points)
-                
                 folium.Circle(
                     location=[place.lat, place.lon],
                     radius=tourist_radius,
@@ -162,6 +182,16 @@ class MapCreation:
     
     @staticmethod
     def get_realty_popup(row: Reality):
+        """
+        Получение HTML-попапа для объекта недвижимости.
+
+        Параметры:
+        - row (Reality): Объект недвижимости.
+
+        Возвращает:
+        - str: HTML-строка для попапа.
+        """
+        
         popup = ''
         popup += f"<p>Номер: {row.id}</p>"
         popup += f"<p>Адрес: {row.address}</p>"
@@ -184,6 +214,16 @@ class MapCreation:
     
     @staticmethod
     def get_poi_popup(poi: PoiData):
+        """
+        Получение HTML-попапа для точки интереса.
+
+        Параметры:
+        - poi (PoiData): Точка интереса.
+
+        Возвращает:
+        - str: HTML-строка для попапа.
+        """
+        
         popup = ''
         popup += f"<p>Номер: {poi.id}</p>"
         popup += f"<p>Название: {poi.name}</p>"
@@ -192,7 +232,17 @@ class MapCreation:
         popup += f"<p>Категории: {poi.rubrics}</p>"
         return popup
     
-    def validate_by_metro(self, id, metro_radius):
+    def validate_by_metro(self, id, metro_radius: int):
+        """
+        Проверка, находится ли объект в пределах радиуса метро.
+
+        Параметры:
+        - id: Идентификатор объекта.
+        - metro_radius (int): Радиус в метрах для определения близости к метро.
+
+        Возвращает:
+        - bool: True, если объект находится в пределах радиуса метро, иначе False.
+        """
         metro_stmt = select(Distance_metro).where(Distance_metro.id_poe == id)
         
         metro = self.session.execute(metro_stmt)
@@ -204,6 +254,17 @@ class MapCreation:
         return False 
     
     def validate_by_tourist(self, id, tourist_radius):
+        """
+        Проверка, находится ли объект в пределах радиуса достопримечательности.
+
+        Параметры:
+        - id: Идентификатор объекта.
+        - tourist_radius (int): Радиус в метрах для определения близости к достопримечательностям.
+
+        Возвращает:
+        - bool: True, если объект находится в пределах радиуса достопримечательности, иначе False.
+        """
+        
         metro_stmt = select(Distance_attraction).where(Distance_attraction.id_reality == id)
         
         tourist = self.session.execute(metro_stmt)
@@ -226,6 +287,23 @@ class MapCreation:
         metro_radius: int,
         tourist_radius: int
         ):
+        """
+        Поиск объектов недвижимости по заданным параметрам.
+
+        Параметры:
+        - price_min (int): Минимальная цена аренды.
+        - price_max (int): Максимальная цена аренды.
+        - square_min (int): Минимальная площадь.
+        - square_max (int): Максимальная площадь.
+        - floor_min (float): Минимальный этаж.
+        - floor_max (float): Максимальный этаж.
+        - segment_type_list (list[str]): Список типов помещений.
+        - metro_radius (int): Радиус в метрах для определения близости к метро.
+        - tourist_radius (int): Радиус в метрах для определения близости к достопримечательностям.
+
+        Возвращает:
+        - list[Reality]: Список объектов недвижимости, соответствующих заданным параметрам.
+        """
         
         result = list()
         
@@ -241,16 +319,24 @@ class MapCreation:
         data = self.session.execute(stmt)
         data = data.scalars().all()
         
-        print(f'До радиусов {len(data)}')
-        
         for el in data:
             if self.validate_by_metro(el.id, metro_radius) and self.validate_by_tourist(el.id, tourist_radius):
                 result.append(el)
-                
-        print(f'После радиусов {len(result)}')
         return result
     
     def filter_favorit(self, data: list[Reality], love=[], hate=[], radius: int = 1000):
+        """
+        Фильтрация объектов недвижимости по предпочтениям пользователя.
+
+        Параметры:
+        - data (list[Reality]): Список объектов недвижимости.
+        - love (list[str]): Список предпочтений пользователя.
+        - hate (list[str]): Список нежелательных предпочтений пользователя.
+        - radius (int): Радиус в метрах для определения близости к объектам.
+
+        Возвращает:
+        - tuple[list[Reality], list[PoiData]]: Кортеж, содержащий отфильтрованный список объектов недвижимости и список объектов, соответствующих нежелательным предпочтениям.
+        """
         love_filter = or_(PoiData.rubrics.contains([rubric]) for rubric in love)
         hate_filter = or_(~PoiData.rubrics.contains([rubric]) for rubric in hate)
         combined_filter = and_(love_filter, hate_filter)
@@ -264,17 +350,22 @@ class MapCreation:
             print(el.address)
             for sel in result:
                 if geodesic(el_coords, [sel.lat, sel.lon]).meters <= radius:
-                    # coordin_el = self.get_coordinates(el.address)  
-                    # coordin_sel = self.get_coordinates('Санкт-Петербург, '+sel.adress_name) 
-                    # distance = self.get_distance_osrm(coordin_el, coordin_sel)
-                    # if distance <= radius:
                         final_res.append(sel)
                         continue
             final_data.append(el)
 
         return final_data, list(set(final_res))
 
-    def get_coordinates(self, address):
+    def get_coordinates(self, address: str):
+        """
+        Получение координат по адресу.
+
+        Параметры:
+        - address (str): Адрес для поиска координат.
+
+        Возвращает:
+        - tuple: Кортеж с координатами (широта, долгота).
+        """
         geocode_url = f"https://geocode-maps.yandex.ru/1.x/?apikey={self.API_KEY}&geocode={address}&format=json"
         response = requests.get(geocode_url)
         response_json = response.json()
@@ -282,6 +373,17 @@ class MapCreation:
         return tuple(map(float, coordinates_str.split()))
 
     def get_distance_osrm(self, start_coord, end_coord):
+        """
+        Получение расстояния между двумя координатами с использованием OSRM.
+
+        Параметры:
+        - start_coord (tuple): Кортеж с начальными координатами (широта, долгота).
+        - end_coord (tuple): Кортеж с конечными координатами (широта, долгота).
+
+        Возвращает:
+        - float: Расстояние в метрах между начальной и конечной точками.
+        """
+        
         osrm_route_url = f"http://router.project-osrm.org/route/v1/driving/{start_coord[0]},{start_coord[1]};{end_coord[0]},{end_coord[1]}?overview=false"
         response = requests.get(osrm_route_url)
         route_data = response.json()
@@ -293,34 +395,41 @@ class MapCreation:
             print("Маршрут не найден")
             return None
 
-
     def build_map(
         self,
-        price_min: int = 100,
-        price_max: int = 1000,
-        square_min: int = 10,
+        price_min: int = 3000,
+        price_max: int = 5000,
+        square_min: int = 50,
         square_max: int = 1000,
         floor_min: float = 1.0,
         floor_max: float = 10.0,
         segment_type_list: list[str] = ['Офисные', 'Производственные', 'Торговые', 'Иные'],
         metro_radius: int = 1000,
-        tourist_radius: int = 500,
+        tourist_radius: int = 1000,
         love: list[str] = ['Пекарни'],
         hate: list[str] = ['Барбершопы'],
         select_radius: int = 1000
         ):
-        
-        print(price_min)
-        print(price_max)
-        print(square_min)
-        print(square_max)
-        print(floor_min)
-        print(floor_max)
-        print(segment_type_list)
-        print(metro_radius)
-        print(love)
-        print(hate)
-        print(select_radius)
+        """
+        Сборка карты с учетом заданных параметров и фильтров.
+
+        Параметры:
+        - price_min (int): Минимальная цена аренды.
+        - price_max (int): Максимальная цена аренды.
+        - square_min (int): Минимальная площадь.
+        - square_max (int): Максимальная площадь.
+        - floor_min (float): Минимальный этаж.
+        - floor_max (float): Максимальный этаж.
+        - segment_type_list (list[str]): Список типов помещений.
+        - metro_radius (int): Радиус в метрах для определения близости к метро.
+        - tourist_radius (int): Радиус в метрах для определения близости к достопримечательностям.
+        - love (list[str]): Список предпочтений пользователя.
+        - hate (list[str]): Список нежелательных предпочтений пользователя.
+        - select_radius (int): Радиус в метрах для определения близости к объектам.
+
+        Возвращает:
+        - tuple[str, list[Reality]]: Кортеж, содержащий HTML-представление карты и список объектов недвижимости.
+        """
         
         self.add_metro(metro_radius)
         self.add_tourist(tourist_radius)
@@ -338,11 +447,11 @@ class MapCreation:
             tourist_radius=tourist_radius
         )
         
-        if love or hate:
+        if love and hate:
             data, enemy_object = self.filter_favorit(data=data, love=love, hate=hate, radius=select_radius)
         
         for index, el in enumerate(data):
-            
+        
             folium.Marker(
                 location=[el.point_y, el.point_x],
                 popup=self.get_realty_popup(el),
