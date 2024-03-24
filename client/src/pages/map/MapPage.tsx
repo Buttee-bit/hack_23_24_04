@@ -245,7 +245,8 @@ const MapPage = () => {
 				</Paper>
 
 				<Paper className='h-full w-full bg-red-300 overflow-hidden relative'>
-					{(initialHTMLLoading || isPostDataLoading) && <Loader />}
+					{isPostDataLoading && <Loader />}
+					{initialHTMLLoading && <Loader />}
 					{isSuccess && (
 						<>
 							<motion.div
