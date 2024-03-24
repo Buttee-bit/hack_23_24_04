@@ -6,7 +6,7 @@ from sqlalchemy import and_, delete, desc, func, insert, select, update
 from sqlalchemy.orm import selectinload
 from ..datebase import get_async_session
 from sqlalchemy.ext.asyncio import AsyncSession
-from .schemas import CustomMapView  
+from .schemas import CustomMapView
 from typing import Any
 
 import logging
@@ -24,26 +24,33 @@ router = APIRouter(
 
 @router.get('/custom_map')
 async def custom_map():
-    iframe = MapCreation().build_map()
-    
-    return iframe
+    iframe, data = MapCreation().build_map()
+
+    return {
+        "iframe": iframe,
+        "data": data
+    }
 
 
 @router.post('/custom_map_params')
 async def custom_map_params(custom_map_view: CustomMapView) -> Any:
-    iframe = MapCreation().build_map(
-        custom_map_view.price_min, 
-        custom_map_view.price_max, 
-        custom_map_view.square_min, 
-        custom_map_view.square_max, 
-        custom_map_view.floor_min, 
-        custom_map_view.floor_max, 
+    iframe, data = MapCreation().build_map(
+        custom_map_view.price_min,
+        custom_map_view.price_max,
+        custom_map_view.square_min,
+        custom_map_view.square_max,
+        custom_map_view.floor_min,
+        custom_map_view.floor_max,
         custom_map_view.segment_type_list,
         custom_map_view.metro_radius,
         custom_map_view.tourist_radius
     )
     logging.warning(custom_map_view)
-    return iframe
+
+    return {
+        "iframe": iframe,
+        "data": data
+    }
 
 # def visualize_polygons(geometry):
 
