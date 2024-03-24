@@ -10,6 +10,7 @@ import { toast } from 'sonner'
 
 import { Button as ShadButton } from '@/components/ui/button'
 import React, { FC } from 'react'
+import clsx from 'clsx'
 
 const Transition = React.forwardRef(function Transition(
 	props: TransitionProps & {
@@ -62,13 +63,23 @@ const BadCategories: FC<Props> = ({
 	return (
 		<div className='mt-4'>
 			<React.Fragment>
-				<ShadButton
-					variant='outline'
-					className='block mx-auto mt-4'
-					onClick={handleClickOpen}
-				>
-					Нежелаемые категории рядом
-				</ShadButton>
+				<div className='flex items-center justify-center gap-4'>
+					<ShadButton variant='outline' onClick={handleClickOpen}>
+						Нежелаемые категории рядом
+					</ShadButton>
+					<h4
+						className={clsx(
+							'border rounded-full w-8 h-8 flex items-center justify-center',
+							{
+								'bg-green-300': categories.length > 3,
+								'bg-yellow-300': categories.length > 5,
+								'bg-red-400 text-white': categories.length > 8
+							}
+						)}
+					>
+						{categories.length}
+					</h4>
+				</div>
 				<Dialog
 					fullScreen
 					open={open}

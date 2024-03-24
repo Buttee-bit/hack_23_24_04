@@ -18,6 +18,7 @@ import { motion } from 'framer-motion'
 import ObjectContent from '@/components/map/ObjectContent'
 import CloudDownloadIcon from '@mui/icons-material/CloudDownload'
 import { AuroraBackground } from '@/components/ui/aurora-background'
+import { HoverEffect } from '@/components/ui/card-hover-effect'
 
 export interface IObject {
 	point_x: number
@@ -58,6 +59,7 @@ const MapPage = () => {
 	const [goodCategories, setGoodCategories] = useState([])
 	const [badCategories, setBadCategories] = useState([])
 	const [categoriesSlider, setCategoriesSlider] = useState(100)
+	const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
 
 	const [postData, { data: postDataResponse, isLoading: isPostDataLoading }] =
 		MapApi.usePostCustomViewMutation()
@@ -113,38 +115,82 @@ const MapPage = () => {
 							Фильтры
 						</h2>
 						<div className='max-w-5xl mx-auto px-4 mt-2'>
-							<PriceSlider
-								value={priceValue}
-								setValue={setPriceValue}
-							/>
-							<SizeSlider
-								value={sizeValue}
-								setValue={setSizeValue}
-							/>
-							<FloorSlider
-								value={floorValue}
-								setValue={setFloorValue}
-							/>
-							<BuildingType
-								category={buildingCategory}
-								setCategory={setBuildingCategory}
-							/>
-							<MetroSlider
-								value={metroValue}
-								setValue={setMetroValue}
-							/>
-							<EntertainmentSlider
-								value={entertainmentValue}
-								setValue={setEntertainmentValue}
-							/>
-							<CategoryFilter
-								goodCategories={goodCategories}
-								badCategories={badCategories}
-								setGoodCategories={setGoodCategories}
-								setBadCategories={setBadCategories}
-								categoriesSlider={categoriesSlider}
-								setCategoriesSlider={setCategoriesSlider}
-							/>
+							<HoverEffect
+								hoveredIndex={hoveredIndex}
+								setHoveredIndex={setHoveredIndex}
+								index={1}
+							>
+								<PriceSlider
+									value={priceValue}
+									setValue={setPriceValue}
+								/>
+							</HoverEffect>
+							<HoverEffect
+								hoveredIndex={hoveredIndex}
+								setHoveredIndex={setHoveredIndex}
+								index={2}
+							>
+								<SizeSlider
+									value={sizeValue}
+									setValue={setSizeValue}
+								/>
+							</HoverEffect>
+							<HoverEffect
+								hoveredIndex={hoveredIndex}
+								setHoveredIndex={setHoveredIndex}
+								index={3}
+							>
+								<FloorSlider
+									value={floorValue}
+									setValue={setFloorValue}
+								/>
+							</HoverEffect>
+							<HoverEffect
+								hoveredIndex={hoveredIndex}
+								setHoveredIndex={setHoveredIndex}
+								index={4}
+							>
+								<BuildingType
+									category={buildingCategory}
+									setCategory={setBuildingCategory}
+								/>
+							</HoverEffect>
+							<HoverEffect
+								hoveredIndex={hoveredIndex}
+								setHoveredIndex={setHoveredIndex}
+								index={5}
+							>
+								<MetroSlider
+									value={metroValue}
+									setValue={setMetroValue}
+								/>
+							</HoverEffect>
+							<HoverEffect
+								hoveredIndex={hoveredIndex}
+								setHoveredIndex={setHoveredIndex}
+								index={6}
+							>
+								<EntertainmentSlider
+									value={entertainmentValue}
+									setValue={setEntertainmentValue}
+								/>
+							</HoverEffect>
+
+							<HoverEffect
+								hoveredIndex={hoveredIndex}
+								setHoveredIndex={setHoveredIndex}
+								index={7}
+							>
+								<CategoryFilter
+									goodCategories={goodCategories}
+									badCategories={badCategories}
+									setGoodCategories={setGoodCategories}
+									setBadCategories={setBadCategories}
+									categoriesSlider={categoriesSlider}
+									setCategoriesSlider={setCategoriesSlider}
+								/>
+							</HoverEffect>
+
 							<Button
 								variant='contained'
 								sx={{

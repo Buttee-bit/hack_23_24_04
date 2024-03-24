@@ -8,47 +8,97 @@ import {
 	CardHeader,
 	CardTitle
 } from '@/components/ui/card'
+import { Button } from '../ui/button'
+import { motion } from 'framer-motion'
 
 interface Props {
 	data: IObject[]
 }
 
 const ObjectContent: FC<Props> = ({ data }) => {
+	const container = {
+		hidden: { opacity: 1, scale: 0 },
+		visible: {
+			opacity: 1,
+			scale: 1,
+			transition: {
+				delayChildren: 0.3,
+				staggerChildren: 0.2
+			}
+		}
+	}
+
+	const item = {
+		hidden: { y: 20, opacity: 0 },
+		visible: {
+			y: 0,
+			opacity: 1
+		}
+	}
+
 	return (
 		<>
-			<div className='grid grid-cols-3 mt-8'>
+			<motion.div
+				className='grid grid-cols-3 mt-8'
+				variants={container}
+				initial='hidden'
+				whileInView='visible'
+				viewport={{ once: true }}
+			>
 				{data?.map((object: IObject) => (
-					<Card className='w-[500px]'>
-						<CardHeader>
-							<CardTitle>
-								<span className='bg-green-200 px-2 m-1'>
-									Адрес:
-								</span>
-								{object.address}e
-							</CardTitle>
-							<CardDescription>
-                            <span className='bg-green-200 px-2 m-1'>
-									Ссылка:
-								</span>
-								<a
-									href={object.additional_info}
-									target='_blank'
-									// rel='noopener noreferrer'
-								>
-									{object.additional_info}
-								</a>
-							</CardDescription>
-						</CardHeader>
-						<CardContent>
-							<p>{object.entity_type}</p>
-							<p>{object.main_type}</p>
-							<p>{object.lease_price}</p>
-							<p>{object.source_info}</p>
-						</CardContent>
-						<CardFooter></CardFooter>
-					</Card>
+					<motion.div variants={item}>
+						<Card className='w-[500px]'>
+							<CardHeader>
+								<CardTitle>
+									<span className='bg-green-200 px-2 m-1'>
+										Адрес:
+									</span>
+									{object.address}
+								</CardTitle>
+								<CardDescription>
+									<Button
+										asChild
+										variant='link'
+										className='px-0'
+									>
+										<a
+											href={object.additional_info}
+											target='_blank'
+											// rel='noopener noreferrer'
+										>
+											{object.additional_info}
+										</a>
+									</Button>
+								</CardDescription>
+							</CardHeader>
+							<CardContent>
+								<div className='flex gap-1 items-center'>
+									<span className='bg-green-200 px-2 m-1'>
+										Тип объявления:
+									</span>
+									<p>{object.main_type}</p>
+								</div>
+								{/* <p>{object.entity_type}</p> */}
+
+								<div className='flex gap-1 items-center mt-1'>
+									<span className='bg-green-200 px-2 m-1'>
+										Стоимость:
+									</span>
+									<p>{object.lease_price}</p>
+								</div>
+
+								<div className='flex gap-1 items-center mt-1'>
+									<span className='bg-green-200 px-2 m-1'>
+										Источник:
+									</span>
+									<p>{object.source_info}</p>
+								</div>
+							</CardContent>
+							<CardFooter></CardFooter>
+						</Card>
+					</motion.div>
 				))}
-			</div>
+			</motion.div>
 		</>
 	)
 }
