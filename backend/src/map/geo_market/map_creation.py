@@ -252,9 +252,8 @@ class MapCreation:
                     
                     print(sel.adress_name)
                     
-                    final_data.append(el)
                     final_res.append(sel)
-        
+            final_data.append(el)
         return final_data, final_res
 
     def build_map(
@@ -296,15 +295,15 @@ class MapCreation:
             tourist_radius=tourist_radius
         )
         
-        filter_data, enemy_object = self.filter_favorit(data=data)
+        data, enemy_object = self.filter_favorit(data=data)
         
-        for el in filter_data:
+        for el in data:
         
             folium.Marker(
                 location=[el.point_y, el.point_x],
                 popup=self.get_realty_popup(el),
                 tooltip=str(el.address),
-                icon=folium.Icon(color="red", icon="flash"),
+                icon=folium.Icon(color="green", icon="flash"),
                 ).add_to(self.marker_points)
             
             folium.Circle(
@@ -315,24 +314,16 @@ class MapCreation:
                 fill_opacity=0.1,
                 opacity=0.5,
                 fill_color="green",
-                fill=False,  # gets overridden by fill_color
-            ).add_to(self.metro_points)
+                fill=False,
+            ).add_to(self.marker_points)
             
         for obj in enemy_object:
             folium.Marker(
                 location=[obj.lat, obj.lon],
                 popup=self.get_realty_popup(el),
                 tooltip=str(obj.adress_name),
-                icon=folium.Icon(color="green", icon="flash"),
+                icon=folium.Icon(color="red", icon="fire"),
                 ).add_to(self.marker_cluster)
         
         iframe = self.map.get_root()._repr_html_()
-
-        point1 = (59.94, 30.22) # Пример координат первой точки
-        point2 = (59.95, 30.23) # Пример координат второй точки
-
-        # Расчет расстояния между двумя точками в метрах
-        distance = geodesic(point1, point2).meters
-
-        print(f"Расстояние между точками: {distance} метров")
         return iframe, data
