@@ -7,7 +7,7 @@ from folium import FeatureGroup
 from folium import plugins
 from shared.models import Reality, PoiData, MetroStation, Tourist_attractions, Distance_metro, Distance_attraction
 from .db import get_sync_session
-from sqlalchemy import and_, any_,delete, desc, func, insert, or_, select, update
+from sqlalchemy import and_, any_,delete, desc, func, insert, or_, select, update, asc
 
 import geopandas as gpd
 
@@ -70,7 +70,7 @@ class MapCreation:
         self.marker_cluster = MarkerCluster(name='Конкуренты', show=False).add_to(self.map)
         self.metro_points = FeatureGroup(name='Метро', show=False).add_to(self.map)
         self.tourist_points = FeatureGroup(name='Достопримечательности', show=False).add_to(self.map)
-        self.marker_points = MarkerCluster(name='Точки интереса').add_to(self.map)
+        self.marker_points = FeatureGroup(name='Точки интереса').add_to(self.map)
 
         plugins.Fullscreen().add_to(self.map)
         plugins.LocateControl().add_to(self.map)
@@ -163,6 +163,7 @@ class MapCreation:
     @staticmethod
     def get_realty_popup(row: Reality):
         popup = ''
+        popup += f"<p>Номер: {row.id}</p>"
         popup += f"<p>Адрес: {row.address}</p>"
         popup += f"<p>Тип объявления: {row.main_type}</p>"
         popup += f"<p>Тип помещения: {row.segment_type}</p>"
@@ -179,7 +180,16 @@ class MapCreation:
                     src="https://ya.ru/">
                 </iframe>
                 """
-
+        return popup
+    
+    @staticmethod
+    def get_poi_popup(poi: PoiData):
+        popup = ''
+        popup += f"<p>Номер: {poi.id}</p>"
+        popup += f"<p>Название: {poi.name}</p>"
+        popup += f"<p>Адрес: {poi.adress_name}</p>"
+        popup += f"<p>Комментарий: {poi.addres_comment}</p>"
+        popup += f"<p>Категории: {poi.rubrics}</p>"
         return popup
     
     def validate_by_metro(self, id, metro_radius):
@@ -226,7 +236,8 @@ class MapCreation:
                 Reality.floor.between(floor_min, floor_max),
                 Reality.segment_type.in_(segment_type_list)
             )
-        )
+        ).order_by(asc(Reality.lease_price))
+        
         data = self.session.execute(stmt)
         data = data.scalars().all()
         
@@ -239,7 +250,7 @@ class MapCreation:
         print(f'После радиусов {len(result)}')
         return result
     
-    def filter_favorit(self, data: list[Reality], love=['Пекарни'], hate=['Рестораны'], radius=1000):
+    def filter_favorit(self, data: list[Reality], love=[], hate=[], radius: int = 1000):
         love_filter = or_(PoiData.rubrics.contains([rubric]) for rubric in love)
         hate_filter = or_(~PoiData.rubrics.contains([rubric]) for rubric in hate)
         combined_filter = and_(love_filter, hate_filter)
@@ -248,7 +259,7 @@ class MapCreation:
         final_data = list()
         final_res = list()
         
-        for el in data:
+        for el in data[:50]:
             el_coords = [el.point_y, el.point_x]
             print(el.address)
             for sel in result:
@@ -261,7 +272,7 @@ class MapCreation:
                         continue
             final_data.append(el)
 
-        return final_data, final_res
+        return final_data, list(set(final_res))
 
     def get_coordinates(self, address):
         geocode_url = f"https://geocode-maps.yandex.ru/1.x/?apikey={self.API_KEY}&geocode={address}&format=json"
@@ -269,9 +280,6 @@ class MapCreation:
         response_json = response.json()
         coordinates_str = response_json['response']['GeoObjectCollection']['featureMember'][0]['GeoObject']['Point']['pos']
         return tuple(map(float, coordinates_str.split()))
-
-
-
 
     def get_distance_osrm(self, start_coord, end_coord):
         osrm_route_url = f"http://router.project-osrm.org/route/v1/driving/{start_coord[0]},{start_coord[1]};{end_coord[0]},{end_coord[1]}?overview=false"
@@ -297,8 +305,9 @@ class MapCreation:
         segment_type_list: list[str] = ['Офисные', 'Производственные', 'Торговые', 'Иные'],
         metro_radius: int = 1000,
         tourist_radius: int = 500,
-        love: list[str] = [],
-        hate: list[str] = []
+        love: list[str] = ['Пекарни'],
+        hate: list[str] = ['Барбершопы'],
+        select_radius: int = 1000
         ):
         
         print(price_min)
@@ -309,9 +318,13 @@ class MapCreation:
         print(floor_max)
         print(segment_type_list)
         print(metro_radius)
+        print(love)
+        print(hate)
+        print(select_radius)
         
         self.add_metro(metro_radius)
         self.add_tourist(tourist_radius)
+        enemy_object = list()
         
         data: list[Reality] = self.search_by_params(
             price_min=int(price_min),
@@ -325,32 +338,33 @@ class MapCreation:
             tourist_radius=tourist_radius
         )
         
-        data, enemy_object = self.filter_favorit(data=data)
+        if love or hate:
+            data, enemy_object = self.filter_favorit(data=data, love=love, hate=hate, radius=select_radius)
         
-        for el in data:
-        
+        for index, el in enumerate(data):
+            
             folium.Marker(
                 location=[el.point_y, el.point_x],
                 popup=self.get_realty_popup(el),
                 tooltip=str(el.address),
-                icon=folium.Icon(color="green", icon="flash"),
+                icon=folium.Icon(color="purple" if index < 5 else 'green', icon="flash"),
                 ).add_to(self.marker_points)
             
             folium.Circle(
                 location=[el.point_y, el.point_x],
-                radius=1000,
+                radius=select_radius,
                 color="blue",
                 weight=1,
                 fill_opacity=0.1,
                 opacity=0.5,
-                fill_color="green",
+                fill_color="purple" if index < 5 else 'green',
                 fill=False,
             ).add_to(self.marker_points)
             
         for obj in enemy_object:
             folium.Marker(
                 location=[obj.lat, obj.lon],
-                popup=self.get_realty_popup(el),
+                popup=self.get_poi_popup(obj),
                 tooltip=str(obj.adress_name),
                 icon=folium.Icon(color="red", icon="fire"),
                 ).add_to(self.marker_cluster)

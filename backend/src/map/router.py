@@ -81,7 +81,10 @@ async def custom_map_params(custom_map_view: CustomMapView) -> Any:
         custom_map_view.floor_max,
         custom_map_view.segment_type_list,
         custom_map_view.metro_radius,
-        custom_map_view.tourist_radius
+        custom_map_view.tourist_radius,
+        custom_map_view.love,
+        custom_map_view.hate,
+        custom_map_view.select_radius
     )
     logging.warning(custom_map_view)
 
