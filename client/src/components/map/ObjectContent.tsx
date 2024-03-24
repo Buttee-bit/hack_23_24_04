@@ -42,8 +42,8 @@ const ObjectContent: FC<Props> = ({ data }) => {
 				className='grid grid-cols-1 gap-4 items-center justify-center lg:grid-cols-2 2xl:grid-cols-3 mt-8'
 				variants={container}
 				initial='hidden'
-				whileInView='visible'
-				viewport={{ once: true }}
+				animate='visible'
+				// viewport={{ once: true }}
 			>
 				{data?.map((object: IObject) => (
 					<motion.div variants={item}>
