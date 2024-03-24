@@ -28,3 +28,4 @@ geopandas==0.14.3
 numpy==1.26.2
 osmnx==1.9.1
 geopy==2.4.1
+openpyxl
