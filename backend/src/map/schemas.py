@@ -11,3 +11,6 @@ class CustomMapView(BaseModel):
     segment_type_list: List[str]
     metro_radius: int
     tourist_radius: int
+    hate: List[str]
+    love: List[str]
+    select_radius: int
