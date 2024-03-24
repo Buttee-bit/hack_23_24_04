@@ -12,6 +12,22 @@ import MetroSlider from '@/components/map/MetroSlider'
 import PriceSlider from '@/components/map/PriceSlider'
 import SizeSlider from '@/components/map/SizeSlider'
 
+interface IObject {
+	point_x: number
+	point_y: number
+	main_type: string
+	segment_type: string
+	total_arena: number
+	floor: number
+	additional_info: string
+	address: string
+	id: number
+	entity_type: string
+	lease_price: number
+	source_info: string
+	update_date: string
+}
+
 const MapPage = () => {
 	const { data: initialHTML, isLoading: initialHTMLLoading } =
 		MapApi.useGetCustomViewQuery('')
@@ -37,14 +53,18 @@ const MapPage = () => {
 	useEffect(() => {
 		if (initialHTML) {
 			console.log('setContent(initialHTML)')
-			setContent(initialHTML)
+			setContent(initialHTML?.iframe)
+			setObjectContent(initialHTML?.data)
 		}
 	}, [initialHTML])
+
+	console.log(objectContent)
 
 	useEffect(() => {
 		if (postDataResponse) {
 			console.log('setContent(postDataResponse)')
-			setContent(postDataResponse)
+			setContent(postDataResponse?.iframe)
+			setObjectContent(postDataResponse?.data)
 		}
 	}, [postDataResponse])
 
@@ -124,6 +144,18 @@ const MapPage = () => {
 					dangerouslySetInnerHTML={{ __html: content }}
 				>
 					{/* Контент будет вставлен сюда */}
+				</Paper>
+				<Paper>
+					{objectContent.map((object: IObject) => (
+						<>
+							<div>{object.address}</div>
+							<div>{object.additional_info}</div>
+							<div>{object.entity_type}</div>
+							<div>{object.main_type}</div>
+							<div>{object.lease_price}</div>
+							<div>{object.source_info}</div>
+						</>
+					))}
 				</Paper>
 			</div>
 			<Toaster />
