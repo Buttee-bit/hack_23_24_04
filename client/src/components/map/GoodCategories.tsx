@@ -7,6 +7,12 @@ import CloseIcon from '@mui/icons-material/Close'
 import Slide from '@mui/material/Slide'
 import { TransitionProps } from '@mui/material/transitions'
 import { toast } from 'sonner'
+import {
+	Accordion,
+	AccordionContent,
+	AccordionItem,
+	AccordionTrigger
+} from '@/components/ui/accordion'
 
 import { Button as ShadButton } from '@/components/ui/button'
 import React, { FC } from 'react'
@@ -50,7 +56,9 @@ const GoodCategories: FC<Props> = ({
 				}
 			})
 		} else {
-			toast('Данная категория выбрана в списке нежелательных категорий!')
+			toast(
+				'Одна из выбранных категорий уже в списке нежелаемых категорий!'
+			)
 		}
 	}
 
@@ -67,8 +75,36 @@ const GoodCategories: FC<Props> = ({
 	}
 
 	const filteredCategories = data.filter((category: any) =>
-		category.toLowerCase().includes(text.toLowerCase())
+		category.key.toLowerCase().includes(text.toLowerCase())
 	)
+
+	const handleAddAll = (values: string[]) => {
+		values.forEach(text => {
+			const inAltArray = altCategories.includes(text)
+			if (!inAltArray) {
+				setCategories((prev: any) => {
+					const inArray = prev.includes(text)
+					if (inArray) {
+						return prev.filter((item: any) => item !== text)
+					} else {
+						return [...prev, text]
+					}
+				})
+			} else {
+				toast(
+					'Некоторые категории не были добавлены в список, поскольку они указаны в нежелаемых категориях!'
+				)
+			}
+		})
+	}
+
+	const handleDeleteAll = (values: string[]) => {
+		setCategories(prevCategories =>
+			prevCategories.filter(category => !values.includes(category))
+		)
+	}
+
+	// console.log(categories)
 
 	return (
 		<div className='mt-4'>
@@ -114,7 +150,7 @@ const GoodCategories: FC<Props> = ({
 									>
 										<CloseIcon />
 									</IconButton>
-									<p>Нужные категории</p>
+									<p>Желаемые категории</p>
 								</div>
 								<div className='flex items-center gap-2 basis-1/2'>
 									<p>Поиск</p>
@@ -135,24 +171,76 @@ const GoodCategories: FC<Props> = ({
 							</Toolbar>
 						</div>
 					</AppBar>
-					<div className='flex flex-wrap gap-4 mt-4 p-4 py-20'>
+					<div className='mt-4 p-4 py-20'>
 						{filteredCategories.map((item: any, index: any) => {
-							const inArray = categories.includes(item)
-
 							return (
-								<div key={index}>
-									<ShadButton
-										variant='outline'
-										className={`${
-											inArray
-												? 'bg-green-200 hover:bg-green-300'
-												: ''
-										} block`}
-										onClick={() => handleCategory(item)}
-									>
-										{item}
-									</ShadButton>
-								</div>
+								<Accordion
+									key={index}
+									type='single'
+									collapsible
+								>
+									<AccordionItem value='val-1'>
+										<AccordionTrigger className='text-lg flex items-center justify-center gap-4'>
+											<p>{item.key}</p>
+										</AccordionTrigger>
+										<AccordionContent>
+											<div className='w-fit mx-auto my-6 flex gap-4 items-center'>
+												<ShadButton
+													className='bg-green-500 active:scale-95 transition-all'
+													onClick={() =>
+														handleAddAll(item.value)
+													}
+												>
+													Выбрать все
+												</ShadButton>
+												<ShadButton
+													onClick={() =>
+														handleDeleteAll(
+															item.value
+														)
+													}
+													variant='outline'
+													className='bg-red-500 hover:bg-red-600 text-white hover:text-white active:scale-95 transition-all'
+												>
+													Удалить все
+												</ShadButton>
+											</div>
+											<div className='flex flex-wrap gap-4'>
+												{item.value.map(
+													(
+														cat: string,
+														indexCat: number
+													) => {
+														const inArray =
+															categories.includes(
+																cat
+															)
+
+														return (
+															<div key={indexCat}>
+																<ShadButton
+																	variant='outline'
+																	className={`${
+																		inArray
+																			? 'bg-green-200 hover:bg-green-300'
+																			: ''
+																	} block`}
+																	onClick={() =>
+																		handleCategory(
+																			cat
+																		)
+																	}
+																>
+																	{cat}
+																</ShadButton>
+															</div>
+														)
+													}
+												)}
+											</div>
+										</AccordionContent>
+									</AccordionItem>
+								</Accordion>
 							)
 						})}
 					</div>
