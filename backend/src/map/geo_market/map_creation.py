@@ -45,7 +45,7 @@ class MapCreation:
         self,
         location: tuple = (59.94, 30.22),
         tiles: str = 'openstreetmap',
-        zoom_start: int = 10,
+        zoom_start: int = 13,
         min_zoom: int = 1,
         max_zoom: int = 20,
         cities: list[str] = ['Санкт-Петербург'],
@@ -192,25 +192,58 @@ class MapCreation:
         - str: HTML-строка для попапа.
         """
         
-        popup = ''
-        popup += f"<p>Номер: {row.id}</p>"
-        popup += f"<p>Адрес: {row.address}</p>"
-        popup += f"<p>Тип объявления: {row.main_type}</p>"
-        popup += f"<p>Тип помещения: {row.segment_type}</p>"
-        popup += f"<p>Площадь: {row.total_arena}</p>"
-        popup += f"<p>Этаж: {row.floor}</p>"
-        popup += f"<p>Стоимость: {row.lease_price}</p>"
-        popup += f"<p>Источник: {row.source_info}</p>"
-        popup += f"<p>Ссылка: <a href={row.additional_info}target='_blank'>Ссылка</a></p>"
-        popup += f"<p>Дата публикации: {row.update_date}</p>"
-        popup += f"""<iframe id="inlineFrameExample"
-                    title="Inline Frame Example"
-                    width="300"
-                    height="200"
-                    src="https://ya.ru/">
-                </iframe>
-                """
+        popup = f"""
+        <style>
+            .popup-content {{
+                font-family: Arial, sans-serif;
+                font-size: 14px;
+                margin: 0;
+                padding: 0;
+                min-width: 300px;  
+                max-width: 400px;  
+            }}
+            .popup-content p {{
+                margin: 4px 0;
+            }}
+            .popup-content a {{
+                color: #007BFF;
+            }}
+            .popup-title {{
+                font-weight: bold;
+                color: #333;
+            }}
+            .iframe-container {{
+                position: relative;
+                overflow: hidden;
+                padding-top: 56.25%;
+            }}
+            .iframe-container iframe {{
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                border: 0;
+            }}
+        </style>
+        <div class="popup-content">
+            <p><span class="popup-title">Номер:</span> {row.id}</p>
+            <p><span class="popup-title">Адрес:</span> {row.address}</p>
+            <p><span class="popup-title">Тип объявления:</span> {row.main_type}</p>
+            <p><span class="popup-title">Тип помещения:</span> {row.segment_type}</p>
+            <p><span class="popup-title">Площадь:</span> {row.total_arena} м²</p>
+            <p><span class="popup-title">Этаж:</span> {row.floor}</p>
+            <p><span class="popup-title">Стоимость:</span> {row.lease_price}</p>
+            <p><span class="popup-title">Источник:</span> {row.source_info}</p>
+            <p><span class="popup-title">Ссылка:</span> <a href="{row.additional_info}" target="_blank">Перейти</a></p>
+            <p><span class="popup-title">Дата публикации:</span> {row.update_date}</p>
+            <div class="iframe-container">
+                <iframe src="{row.additional_info}" frameborder="0" allowfullscreen></iframe>
+            </div>
+        </div>
+        """
         return popup
+
     
     @staticmethod
     def get_poi_popup(poi: PoiData):
@@ -224,12 +257,32 @@ class MapCreation:
         - str: HTML-строка для попапа.
         """
         
-        popup = ''
-        popup += f"<p>Номер: {poi.id}</p>"
-        popup += f"<p>Название: {poi.name}</p>"
-        popup += f"<p>Адрес: {poi.adress_name}</p>"
-        popup += f"<p>Комментарий: {poi.addres_comment}</p>"
-        popup += f"<p>Категории: {poi.rubrics}</p>"
+        popup = f"""
+        <style>
+            .popup-content {{
+                font-family: Arial, sans-serif;
+                font-size: 14px;
+                margin: 0;
+                padding: 0;
+                min-width: 300px;  
+                max-width: 400px;  
+            }}
+            .popup-content p {{
+                margin: 4px 0;
+            }}
+            .popup-title {{
+                font-weight: bold;
+                color: #333;
+            }}
+        </style>
+        <div class="popup-content">
+            <p><span class="popup-title">Номер:</span> {poi.id}</p>
+            <p><span class="popup-title">Название:</span> {poi.name}</p>
+            <p><span class="popup-title">Адрес:</span> {poi.adress_name}</p>
+            <p><span class="popup-title">Комментарий:</span> {poi.addres_comment}</p>
+            <p><span class="popup-title">Категории:</span> {poi.rubrics}</p>
+        </div>
+        """
         return popup
     
     def validate_by_metro(self, id, metro_radius: int):
