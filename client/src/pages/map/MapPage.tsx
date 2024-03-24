@@ -15,8 +15,10 @@ import Loader from '@/components/ui/loader'
 import { Button as ShadButton } from '@/components/ui/button'
 import ArrowCircleDownIcon from '@mui/icons-material/ArrowCircleDown'
 import { motion } from 'framer-motion'
+import ObjectContent from '@/components/map/ObjectContent'
+import CloudDownloadIcon from '@mui/icons-material/CloudDownload'
 
-interface IObject {
+export interface IObject {
 	point_x: number
 	point_y: number
 	main_type: string
@@ -162,34 +164,52 @@ const MapPage = () => {
 				<Paper className='h-full w-full bg-red-300 overflow-hidden relative'>
 					{initialHTMLLoading && <Loader />}
 					{isSuccess && (
-						<motion.div
-							initial={{ opacity: 0 }}
-							animate={{ opacity: 1 }}
-						>
-							<ShadButton
-								className='absolute z-50 bottom-14 p-10 left-[50%] text-[60px] rounded-full'
-								size='icon'
-								onClick={handleScroll}
+						<>
+							<motion.div
+								initial={{ opacity: 0 }}
+								animate={{ opacity: 1 }}
 							>
-								<ArrowCircleDownIcon fontSize='inherit' />
-							</ShadButton>
-						</motion.div>
+								<ShadButton
+									className='absolute z-50 bottom-14 p-10 left-[50%] text-[60px] rounded-full'
+									size='icon'
+									onClick={handleScroll}
+								>
+									<ArrowCircleDownIcon fontSize='inherit' />
+								</ShadButton>
+							</motion.div>
+							<motion.div
+								initial={{ opacity: 0 }}
+								animate={{ opacity: 1 }}
+							>
+								{/* СЕМЫЧ СЮДА СМАРИ */}
+								<ShadButton
+									className='absolute z-50 bottom-5 right-5 rounded-full'
+									onClick={() => console.log()}
+									variant='outline'
+								>
+									<span className='flex items-center gap-3'>
+										Скачать данные
+										<CloudDownloadIcon className='' />
+									</span>
+								</ShadButton>
+							</motion.div>
+						</>
 					)}
 					<div dangerouslySetInnerHTML={{ __html: content }}></div>
 					{/* Контент будет вставлен сюда */}
 				</Paper>
 				<Paper sx={{ mt: 5 }}>
-					<h3 ref={dataRef}>Данные</h3>
-					{objectContent?.map((object: IObject) => (
-						<>
-							<div>{object.address}</div>
-							<div>{object.additional_info}</div>
-							<div>{object.entity_type}</div>
-							<div>{object.main_type}</div>
-							<div>{object.lease_price}</div>
-							<div>{object.source_info}</div>
-						</>
-					))}
+					<div className='p-8'>
+						<h3
+							ref={dataRef}
+							className='text-3xl font-bold text-center'
+						>
+							Результаты поиска
+						</h3>
+						{objectContent && (
+							<ObjectContent data={objectContent} />
+						)}
+					</div>
 				</Paper>
 			</div>
 			<Toaster />
