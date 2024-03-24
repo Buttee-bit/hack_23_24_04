@@ -57,7 +57,7 @@ export default function PriceSlider({ value, setValue }) {
 		<div className='px-4 mt-4'>
 			<div className='flex items-center justify-between gap-4'>
 				<p className='font-medium'>
-					{switchSmallPrice ? 'Маленькая цена' : 'Большая цена'}
+					{switchSmallPrice ? 'Низкая цена' : 'Высокая цена'}
 				</p>
 				<Switch onChange={handleSwitchChange} color='success' />
 			</div>

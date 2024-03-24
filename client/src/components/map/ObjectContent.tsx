@@ -49,7 +49,7 @@ const ObjectContent: FC<Props> = ({ data }) => {
 					<motion.div variants={item}>
 						<Card
 							className={`relative w-[350px] mx-auto ${
-								index >= 0 && index <= 5 ? 'bg-green-100' : ''
+								index >= 0 && index <= 4 ? 'bg-green-100' : ''
 							}`}
 						>
 							<CardHeader>
@@ -75,9 +75,11 @@ const ObjectContent: FC<Props> = ({ data }) => {
 											Перейти по ссылке
 										</a>
 									</Button>
-									<p className='absolute top-[45%] right-[-25%] text-red-400 text-lg rotate-90'>
-										Наиболее подходящая
-									</p>
+									{(index >= 0 && index <= 4) ?? (
+										<p className='absolute top-[45%] right-[-15%] text-red-400 text-lg rotate-90'>
+											Лучший вариант!
+										</p>
+									)}
 								</CardDescription>
 							</CardHeader>
 							<CardContent>
