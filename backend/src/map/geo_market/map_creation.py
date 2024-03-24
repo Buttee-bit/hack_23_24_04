@@ -234,6 +234,28 @@ class MapCreation:
                 
         print(f'После радиусов {len(result)}')
         return result
+    
+    def filter_favorit(self, data: list[Reality], love=['Пекарни'], hate=['Рестораны'], radius=1000):
+        love_filter = or_(PoiData.rubrics.contains([rubric]) for rubric in love)
+        hate_filter = or_(~PoiData.rubrics.contains([rubric]) for rubric in hate)
+        combined_filter = and_(love_filter, hate_filter)
+        result = self.session.query(PoiData).filter(combined_filter).all()
+        
+        final_data = list()
+        final_res = list()
+        
+        for el in data:
+            el_coords = [el.point_y, el.point_x]
+            print(el.address)
+            for sel in result:
+                if geodesic(el_coords, [sel.lat, sel.lon]).meters <= radius:
+                    
+                    print(sel.adress_name)
+                    
+                    final_data.append(el)
+                    final_res.append(sel)
+        
+        return final_data, final_res
 
     def build_map(
         self,
@@ -274,10 +296,9 @@ class MapCreation:
             tourist_radius=tourist_radius
         )
         
-        for el in data:
-            filter_data = self.filter_favorit()
-            print(filter_data)
-            print(el.address)
+        filter_data, enemy_object = self.filter_favorit(data=data)
+        
+        for el in filter_data:
         
             folium.Marker(
                 location=[el.point_y, el.point_x],
@@ -285,6 +306,25 @@ class MapCreation:
                 tooltip=str(el.address),
                 icon=folium.Icon(color="red", icon="flash"),
                 ).add_to(self.marker_points)
+            
+            folium.Circle(
+                location=[el.point_y, el.point_x],
+                radius=1000,
+                color="blue",
+                weight=1,
+                fill_opacity=0.1,
+                opacity=0.5,
+                fill_color="green",
+                fill=False,  # gets overridden by fill_color
+            ).add_to(self.metro_points)
+            
+        for obj in enemy_object:
+            folium.Marker(
+                location=[obj.lat, obj.lon],
+                popup=self.get_realty_popup(el),
+                tooltip=str(obj.adress_name),
+                icon=folium.Icon(color="green", icon="flash"),
+                ).add_to(self.marker_cluster)
         
         iframe = self.map.get_root()._repr_html_()
 
@@ -295,28 +335,4 @@ class MapCreation:
         distance = geodesic(point1, point2).meters
 
         print(f"Расстояние между точками: {distance} метров")
-        return iframe
-
-
-
-    def filter_favorit(self, love=['Пекарни'], hate=['Рестораны'], radius=1):
-            love_filter = or_(PoiData.rubrics.contains([rubric]) for rubric in love)
-            hate_filter = or_(~PoiData.rubrics.contains([rubric]) for rubric in hate)
-            
-            combined_filter = and_(love_filter, hate_filter)
-            
-            result = self.session.query(PoiData).filter(combined_filter).all()
-            
-            return result
-# while True:
-#     map = MapCreation()
-#     map.build_map()
-#     time.sleep(3000)
-
-# print('start')
-# session = get_sync_session()
-# stmt = select(PoiData)
-# data = session.execute(stmt)
-# DATA = data.scalars().all()
-# print(DATA)
-# session.close() # Не забудьт
+        return iframe, data
