@@ -45,9 +45,13 @@ const ObjectContent: FC<Props> = ({ data }) => {
 				animate='visible'
 				// viewport={{ once: true }}
 			>
-				{data?.map((object: IObject) => (
+				{data?.map((object: IObject, index: number) => (
 					<motion.div variants={item}>
-						<Card className='w-[350px] mx-auto'>
+						<Card
+							className={`relative w-[350px] mx-auto ${
+								index >= 0 && index <= 5 ? 'bg-green-100' : ''
+							}`}
+						>
 							<CardHeader>
 								<CardTitle>
 									<p className=''>
@@ -66,11 +70,14 @@ const ObjectContent: FC<Props> = ({ data }) => {
 										<a
 											href={object.additional_info}
 											target='_blank'
-											// rel='noopener noreferrer'
+											rel='noopener noreferrer'
 										>
 											Перейти по ссылке
 										</a>
 									</Button>
+									<p className='absolute top-[45%] right-[-25%] text-red-400 text-lg rotate-90'>
+										Наиболее подходящая
+									</p>
 								</CardDescription>
 							</CardHeader>
 							<CardContent>
