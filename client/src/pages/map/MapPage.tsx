@@ -238,7 +238,7 @@ const MapPage = () => {
 								// ОТПРАВКА ФИЛЬТРОВ НА БЭК СЮДА
 								onClick={() => handleClick()}
 							>
-								<span>Сохранить</span>
+								<span>Найти</span>
 							</Button>
 						</div>
 					</ScrollArea>
